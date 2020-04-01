@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+
+<AnchorPane prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.agh.kis.seirsimulation.controller.GuiController">
+   <children>
+
+      <ImageView id="background" fx:id="background" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@ds.png" requestedHeight="1000.0" requestedWidth="1000.0"/>
+         </image></ImageView>
+       <GridPane fx:id="gridPane" />
+   </children>
+</AnchorPane>

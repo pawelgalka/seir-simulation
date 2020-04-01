@@ -1,4 +1,5 @@
 package pl.agh.kis.seirsimulation.model;
 
-public class Map {
+public enum State {
+    S,E,I,R,D
 }
