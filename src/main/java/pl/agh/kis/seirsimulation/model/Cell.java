@@ -25,15 +25,15 @@ public class Cell {
         //E
         for (var i = 1; i <= EXPOSED_TIME + 1; i++) {
             stateCountMap
-                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(0));
+                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(i));
         }
         //I
         for (var i = 2 + EXPOSED_TIME; i <= LATENCY - 2; i++) {
             stateCountMap
-                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(0));
+                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(i));
         }
         //R
-        stateCountMap.set(LATENCY - 1, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE) * stateCountMap.get(0));
+        stateCountMap.set(LATENCY - 1, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE) * stateCountMap.get(stateCountMap.size()));
     }
 
     public void calculateInfections(List<Cell> immigrants){
