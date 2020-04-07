@@ -20,23 +20,35 @@ public class Cell {
     }
 
     public void calculateBirthChange() {
+        double demographicRate=Math.round(1 + BIRTH_RATE - DEATH_RATE);
+        double deathRate=Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY);
         //S
-        stateCountMap.set(0, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE) * stateCountMap.get(0));
+        stateCountMap.set(0, (int)  demographicRate* stateCountMap.get(0));
         //E
+        double exposedRate;
+        if(DEADLY_WITHOUT_SYMPTOMS){
+            exposedRate=deathRate;
+        }else exposedRate=demographicRate;
+
         for (var i = 1; i <= EXPOSED_TIME + 1; i++) {
-            stateCountMap
-                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(i));
+            stateCountMap.set(i, (int) exposedRate * stateCountMap.get(i));
         }
         //I
         for (var i = 2 + EXPOSED_TIME; i <= LATENCY - 2; i++) {
             stateCountMap
-                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(i));
+                    .set(i, (int) deathRate * stateCountMap.get(i));
         }
         //R
-        stateCountMap.set(LATENCY - 1, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE) * stateCountMap.get(stateCountMap.size()));
+        stateCountMap.set(LATENCY - 1, (int) demographicRate * stateCountMap.get(stateCountMap.size()));
     }
 
     public void calculateInfections(List<Cell> immigrants){
 
+    }
+    public void changePositionStateCountMap(){
+        for(var i=stateCountMap.size()-1;i>=0;i++){
+            stateCountMap.set(i+1,stateCountMap.get(i+1)+stateCountMap.get(i));
+            stateCountMap.set(i,0);
+        }
     }
 }
