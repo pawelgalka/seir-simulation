@@ -1,10 +1,13 @@
 package pl.agh.kis.seirsimulation.model.data;
 
 import lombok.extern.slf4j.Slf4j;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.Cell;
+import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,17 +28,12 @@ public class DataLoader {
     @Autowired
     ResourceLoader resourceLoader;
 
-    private Resource loadMap(String countryName) {
-        return resourceLoader.getResource(
-                "classpath:COUNTRY.asc".replace("COUNTRY", countryName));
-    }
+    @Autowired
+    GuiContext guiContext;
 
-    private boolean isColumnZero(List<List<Integer>> listOfLists, int index) {
-        return listOfLists.stream().map(list -> list.get(index)).allMatch(x -> x == 0);
-    }
+    public void mapData(String country) throws IOException {
+        Path file = Paths.get(loadMap(country).getURI());
 
-    public void mapData() throws IOException {
-        Path file = Paths.get(loadMap("polp00ag").getURI());
         Stream<String> lines = Files.lines(file);
         List<List<Integer>> linesParsed = lines
                 .filter(line -> Character.isDigit(line.charAt(0))) //remove non-data lines
@@ -52,24 +50,24 @@ public class DataLoader {
             }
         }
         emptyColumns.sort(Comparator.reverseOrder());
-        log.error(emptyColumns.toString());
         linesParsed.forEach(line -> emptyColumns.forEach(x -> line.remove((int) x)));
 
-        var y = (int) ceil((double) linesParsed.size() / 50);
-        var x = (int) ceil((double) linesParsed.get(0).size() / 50);
-        log.error(String.valueOf(linesParsed.get(0).size()));
+        var y = (int) ceil((double) linesParsed.size() / guiContext.getNRows());
+        var x = (int) ceil((double) linesParsed.get(0).size() / guiContext.getNCols());
 
         int max = 0;
 
         List<List<Cell>> cells = new ArrayList<>();
-        for (var i = 0; i < 50; i++) {
+        for (var i = 0; i < guiContext.getNRows(); i++) {
             cells.add(new ArrayList<>());
-            for (var j = 0; j < 50; j++) {
+            for (var j = 0; j < guiContext.getNCols(); j++) {
                 int sum = 0;
                 for (var k = y * i; k < (i + 1) * y && k < linesParsed.size(); k++) {
                     for (var l = x * j; l < (j + 1) * x && l < linesParsed.get(0).size(); l++) {
-                        //                        log.error(l + " " + k);
                         sum += linesParsed.get(k).get(l);
+                        if(sum > Configuration.MIN_RANDOM_CELL){
+                            MapData.addRandomIndex(new Pair<>(i, j));
+                        }
                         max = Math.max(sum, max);
                     }
                 }
@@ -78,5 +76,14 @@ public class DataLoader {
         }
         MapData.setGridMap(cells);
         MapData.setMaxValue(max);
+    }
+
+    private Resource loadMap(String countryName) {
+        return resourceLoader.getResource(
+                "classpath:COUNTRY.asc".replace("COUNTRY", countryName));
+    }
+
+    private boolean isColumnZero(List<List<Integer>> listOfLists, int index) {
+        return listOfLists.stream().map(list -> list.get(index)).allMatch(x -> x == 0);
     }
 }

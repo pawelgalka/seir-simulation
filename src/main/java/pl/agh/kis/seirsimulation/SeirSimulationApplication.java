@@ -8,14 +8,11 @@ import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import pl.agh.kis.seirsimulation.controller.GuiController;
-import pl.agh.kis.seirsimulation.model.Simulation;
 
 @SpringBootApplication
 public class SeirSimulationApplication extends Application {
     private ConfigurableApplicationContext springContext;
-    private Parent rootNode;
-    private FXMLLoader fxmlLoader;
+    private Parent root;
 
     public static void main(String[] args) {
         launch(args);
@@ -24,15 +21,13 @@ public class SeirSimulationApplication extends Application {
     @Override
     public void init() throws Exception {
         springContext = SpringApplication.run(SeirSimulationApplication.class);
-        Simulation simulation = (Simulation) springContext.getBean("simulation");
-        simulation.run();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
+        fxmlLoader.setControllerFactory(springContext::getBean);
+        root = fxmlLoader.load();
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxmlLoader =  new FXMLLoader(getClass().getResource("/sample.fxml"));
-        Parent root = (Parent)fxmlLoader.load();
-        ((GuiController) fxmlLoader.getController()).init();
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Hello World");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

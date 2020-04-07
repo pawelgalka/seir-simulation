@@ -1,19 +1,27 @@
 package pl.agh.kis.seirsimulation.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import pl.agh.kis.seirsimulation.model.data.DataLoader;
-
-import java.io.IOException;
 
 @Slf4j
+@NoArgsConstructor
+@Getter
 public class Simulation {
 
-    @Autowired DataLoader dataLoader;
+    private boolean isRunning;
 
-    public void run() throws IOException {
-        dataLoader.mapData();
+    public void run() {
         log.debug("sim running");
+        isRunning = true;
+    }
+
+    public void pause() {
+        log.debug("sim paused");
+        isRunning = false;
+    }
+
+    public void step() {
+        log.debug("stepping");
     }
 }
