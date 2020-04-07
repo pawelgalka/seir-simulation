@@ -46,7 +46,7 @@ public class Cell {
 
     }
     public void changePositionStateCountMap(){
-        for(var i=stateCountMap.size()-1;i>=0;i--){
+        for(var i=stateCountMap.size()-1;i>0;i--){
             stateCountMap.set(i+1,stateCountMap.get(i+1)+stateCountMap.get(i));
             stateCountMap.set(i,0);
         }
