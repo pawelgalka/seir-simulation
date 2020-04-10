@@ -1,7 +1,9 @@
 package pl.agh.kis.seirsimulation.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.agh.kis.seirsimulation.model.strategy.DiseaseStrategy;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.stream.IntStream;
 import static pl.agh.kis.seirsimulation.model.configuration.Configuration.*;
 
 @Data
+@NoArgsConstructor
+@Component
 public class Cell {
     private List<Integer> stateCountMap;
     private Integer peopleLimit;
@@ -21,9 +25,6 @@ public class Cell {
     private Integer N;
     private Integer D;
 
-    @Autowired
-    public DiseaseStrategy diseaseStrategy;
-
     public Cell(Integer initCount) {
         stateCountMap = IntStream.range(0, 4).mapToObj(x -> 0).collect(Collectors.toList());
         stateCountMap.set(0, initCount);
@@ -33,13 +34,13 @@ public class Cell {
 
     public void simulateDay(){
         updateSEIRstats();
-        var dD=diseaseStrategy.calculateDiseaseDeaths(stateCountMap);
-        int[]changes=diseaseStrategy.getDailyChanges(stateCountMap,N);
+//        var dD=diseaseStrategy.calculateDiseaseDeaths(stateCountMap);
+//        int[]changes=diseaseStrategy.getDailyChanges(stateCountMap,N);
 
-        for(int i=0;i<stateCountMap.size();i++){
-            stateCountMap.set(i,stateCountMap.get(i)+changes[i]);
-        }
-        D+=dD;
+//        for(int i=0;i<stateCountMap.size();i++){
+//            stateCountMap.set(i,stateCountMap.get(i)+changes[i]);
+//        }
+//        D+=dD;
     }
 
     public void updateSEIRstats(){
