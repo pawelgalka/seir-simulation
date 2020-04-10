@@ -13,6 +13,7 @@ public class Simulation {
 
     public void run() {
         log.debug("sim running");
+        
         isRunning = true;
     }
 

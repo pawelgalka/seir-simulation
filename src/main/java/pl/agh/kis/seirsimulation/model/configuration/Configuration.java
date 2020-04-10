@@ -1,9 +1,12 @@
 package pl.agh.kis.seirsimulation.model.configuration;
 
 import lombok.Data;
+import pl.agh.kis.seirsimulation.model.strategy.StrategyEnum;
 
 @Data
 public class Configuration {
+    //Model Config
+    public static StrategyEnum DISEASE_STRATEGY = StrategyEnum.STANDARD_SEIR;
     //Virus Config
     public static double VIRUS_MORTABILITY=0.037;
     public static boolean DEADLY_WITHOUT_SYMPTOMS;

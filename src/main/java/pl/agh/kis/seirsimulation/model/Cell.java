@@ -1,8 +1,9 @@
 package pl.agh.kis.seirsimulation.model;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.agh.kis.seirsimulation.model.strategy.DiseaseStrategy;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -20,16 +21,20 @@ public class Cell {
     private Integer N;
     private Integer D;
 
+    @Autowired
+    public DiseaseStrategy diseaseStrategy;
+
     public Cell(Integer initCount) {
         stateCountMap = IntStream.range(0, 4).mapToObj(x -> 0).collect(Collectors.toList());
         stateCountMap.set(0, initCount);
         peopleLimit = 2 * initCount;
-        D=0;
+        D = 0;
     }
+
     public void simulateDay(){
         updateSEIRstats();
-        var dD=calculateDiseaseDeaths();
-        int[]changes={calculateSusceptibleChange(),calculateExposedChange(),calculateInfectedChange(),calculateRecoveredChange()-dD};
+        var dD=diseaseStrategy.calculateDiseaseDeaths(stateCountMap);
+        int[]changes=diseaseStrategy.getDailyChanges(stateCountMap,N);
 
         for(int i=0;i<stateCountMap.size();i++){
             stateCountMap.set(i,stateCountMap.get(i)+changes[i]);
@@ -37,22 +42,6 @@ public class Cell {
         D+=dD;
     }
 
-    public int calculateSusceptibleChange(){
-        return (int) Math.ceil((BIRTH_RATE*N)-(DEATH_RATE*S)-((CONTACT_RATE*I*S)/N));
-    }
-    public int calculateExposedChange(){
-        return (int)Math.ceil((CONTACT_RATE*I*S)/N - (DEATH_RATE+1/EXPOSED_TIME)*E);
-    }
-    public int calculateInfectedChange(){
-        return (int)Math.ceil(((1/EXPOSED_TIME)*E)-(((1/INFECTED_DAYS)+DEATH_RATE)*I));
-    }
-    public int calculateRecoveredChange(){
-        return (int)Math.ceil((1/INFECTED_DAYS)*I-(DEATH_RATE*R));
-    }
-
-    public int calculateDiseaseDeaths(){
-        return (int)Math.round(calculateRecoveredChange()*VIRUS_MORTABILITY);
-    }
     public void updateSEIRstats(){
         S=stateCountMap.get(0);
         E=stateCountMap.get(1);
@@ -83,14 +72,14 @@ public class Cell {
         }
         //R
         stateCountMap.set(LATENCY - 1, (int) demographicRate * stateCountMap.get(stateCountMap.size()-1));
-    }*/
-    /*    public void changePositionStateCountMap(){
+
+        public void changePositionStateCountMap(){
         for(var i=stateCountMap.size()-2;i>0;i--){
             stateCountMap.set(i+1,stateCountMap.get(i+1)+stateCountMap.get(i));
             stateCountMap.set(i,0);
         }
-    }*/
-    /*    public int countExposed(){
+
+        public int countExposed(){
         return stateCountMap.subList(1,EXPOSED_TIME+2).stream().mapToInt(Integer::intValue).sum();
     }
     public int countInfected(){
