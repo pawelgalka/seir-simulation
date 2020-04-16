@@ -7,6 +7,7 @@ import pl.agh.kis.seirsimulation.model.strategy.StrategyEnum;
 public class Configuration {
     //Model Config
     public static StrategyEnum DISEASE_STRATEGY = StrategyEnum.STANDARD_SEIR;
+    public static double MOVING_PPL_PERC=0.15;
     //Virus Config
     public static double VIRUS_MORTABILITY=0.037;
     public static double EXPOSED_TIME = 6;
@@ -21,4 +22,13 @@ public class Configuration {
     public static int MIN_RANDOM_CELL = 30;
 
     public static double CONTACT_RATE=REPRODUCTION_NUMBER*((DEATH_RATE+(1/EXPOSED_TIME))/(1/EXPOSED_TIME))*(DEATH_RATE+(1/INFECTED_DAYS));
+
+    public static double floorOrCeil(double arg){
+        if(arg>0){
+            return Math.ceil(arg);
+        }else if(arg==0){
+            return 0;
+        } else return Math.floor(arg);
+    }
+
 }
