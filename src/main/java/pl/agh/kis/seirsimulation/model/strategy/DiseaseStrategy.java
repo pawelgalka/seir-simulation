@@ -1,5 +1,7 @@
 package pl.agh.kis.seirsimulation.model.strategy;
 
+import pl.agh.kis.seirsimulation.model.Cell;
+
 import java.util.List;
 
 public interface DiseaseStrategy {
@@ -8,5 +10,5 @@ public interface DiseaseStrategy {
     int calculateInfectedChange(List<Integer> stateCount);
     int calculateRecoveredChange(List<Integer> stateCount);
     int calculateDiseaseDeaths(List<Integer> stateCount);
-    int[] getDailyChanges(List<Integer> stateCount,int stateCountSum);
+    int[] getDailyChanges(Cell cell);
 }

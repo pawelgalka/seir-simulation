@@ -8,6 +8,7 @@ public class Configuration {
     //Model Config
     public static StrategyEnum DISEASE_STRATEGY = StrategyEnum.STANDARD_SEIR;
     public static double MOVING_PPL_PERC=0.15;
+    public static double MOVING_PPL_SICK=0.000001;
     //Virus Config
     public static double VIRUS_MORTABILITY=0.037;
     public static double EXPOSED_TIME = 6;

@@ -1,5 +1,7 @@
 package pl.agh.kis.seirsimulation.model.strategy;
 
+import pl.agh.kis.seirsimulation.model.Cell;
+
 import java.util.List;
 
 public class SarsCov2Strategy implements DiseaseStrategy {
@@ -29,7 +31,7 @@ public class SarsCov2Strategy implements DiseaseStrategy {
     }
 
     @Override
-    public int[] getDailyChanges(List<Integer> stateCount, int stateCountSum) {
+    public int[] getDailyChanges(Cell cell) {
         return new int[0];
     }
 }
