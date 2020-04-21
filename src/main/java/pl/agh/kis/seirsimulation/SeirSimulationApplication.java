@@ -28,7 +28,7 @@ public class SeirSimulationApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("SEIR model cellular automata simulation");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();

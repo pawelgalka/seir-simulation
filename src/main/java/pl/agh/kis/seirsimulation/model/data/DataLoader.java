@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.Cell;
+import pl.agh.kis.seirsimulation.model.State;
 import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 
 import java.io.IOException;
@@ -76,6 +77,7 @@ public class DataLoader {
         }
         MapData.setGridMap(cells);
         MapData.setMaxValue(max);
+        log.debug(String.valueOf(MapData.getMaxStateLevel(State.S)));
     }
 
     private Resource loadMap(String countryName) {
