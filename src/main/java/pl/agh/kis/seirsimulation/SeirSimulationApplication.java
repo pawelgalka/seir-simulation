@@ -1,6 +1,7 @@
 package pl.agh.kis.seirsimulation;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -36,6 +37,8 @@ public class SeirSimulationApplication extends Application {
 
     @Override
     public void stop() {
+        Platform.exit();
         springContext.stop();
+        System.exit(0);
     }
 }

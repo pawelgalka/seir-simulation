@@ -80,14 +80,24 @@ public class GuiUpdater {
         numbers.refresh();
     }
 
-    void updateTest() {
+    public void updateTest() {
         log.debug("update");
         updateLabels(State.I.getState(), guiContext.getGridPane());
         updateDataTable();
+        updateChartData();
+    }
+
+    private void updateChartData() {
+        final LineChart<String, Number> lineChart = guiContext.getHistory();
+        var seriesCategory = String.valueOf(guiContext.getDayOfSim());
+        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
+        lineChart.getData().get(1).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
+        lineChart.getData().get(2).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
+        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
     }
 
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface
-    public void sth() {
+    public void prepareChart() {
         final Axis<String> xAxis = guiContext.getHistory().getXAxis();
         final NumberAxis yAxis = (NumberAxis) guiContext.getHistory().getYAxis();
 
@@ -114,17 +124,5 @@ public class GuiUpdater {
         lineChart.getData().add(series_E);
         lineChart.getData().add(series_I);
         lineChart.getData().add(series_R);
-
-        ScheduledExecutorService scheduledExecutorService;
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-
-        // TODO: 21.04.2020 create common thread pool to fix pausing sim
-        scheduledExecutorService.scheduleAtFixedRate(() -> Platform.runLater(() -> {
-            var seriesCategory = String.valueOf(guiContext.getDayOfSim());
-            series_S.getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
-            series_E.getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
-            series_I.getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
-            series_R.getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
-        }), 0, 500, TimeUnit.MILLISECONDS);
     }
 }

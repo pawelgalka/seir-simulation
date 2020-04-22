@@ -114,7 +114,6 @@ public class GuiController implements Initializable {
             step.setDisable(true);
             guiContext.setSimRunning(true);
             guiUpdater.run();
-            guiUpdater.sth();
         });
         pause.setOnMouseClicked(mouseEvent -> {
             simulation.pause();
@@ -123,6 +122,7 @@ public class GuiController implements Initializable {
         });
         step.setOnMouseClicked(mouseEvent -> {
             simulation.step();
+            guiUpdater.updateTest();
         });
         distribute.setOnMouseClicked(mouseEvent -> {
             distributeRandomIll();
@@ -175,6 +175,7 @@ public class GuiController implements Initializable {
             guiContext.setMapHeight(map.getImage().getHeight());
             guiContext.setMapWidth(map.getImage().getWidth());
             loadGrid();
+            guiUpdater.prepareChart();
             numbers.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
             numbers.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("value"));
             numbers.setItems(data);
