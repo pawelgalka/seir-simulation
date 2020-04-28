@@ -20,6 +20,9 @@ public class Simulation {
     @Autowired
     GuiContext context;
 
+    @Autowired
+    DiseaseProcess diseaseProcess;
+
     private boolean isRunning;
 
     private Timer timer;
@@ -42,9 +45,17 @@ public class Simulation {
     public void step() {
         log.debug("stepping");
         context.dayStep();
-        var row = new Random().nextInt(10) + 10;
-        var col = new Random().nextInt(10) + 10;
-        MapData.addIllnessToCellTest(new Pair<>(row,col));
+        diseaseProcess.makeMove();
+        for (var row : MapData.getGridMap()){
+            for (var cell : row){
+                diseaseProcess.simulateDayAtSingleCell(cell);
+            }
+        }
+        for (var row : MapData.getGridMap()){
+            for (var cell : row){
+                diseaseProcess.makeMoveBack(cell);
+            }
+        }
     }
 
     class EpidemicStep extends TimerTask {

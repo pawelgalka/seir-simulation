@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import pl.agh.kis.seirsimulation.model.DiseaseProcess;
 
 @SpringBootApplication
 public class SeirSimulationApplication extends Application {
@@ -22,6 +23,7 @@ public class SeirSimulationApplication extends Application {
     @Override
     public void init() throws Exception {
         springContext = SpringApplication.run(SeirSimulationApplication.class);
+//        ((DiseaseProcess) springContext.getBean("diseaseProcess")).test();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         root = fxmlLoader.load();

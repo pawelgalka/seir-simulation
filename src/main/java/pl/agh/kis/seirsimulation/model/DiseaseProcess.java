@@ -1,5 +1,6 @@
 package pl.agh.kis.seirsimulation.model;
 
+import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import static pl.agh.kis.seirsimulation.model.configuration.Configuration.MOVING
 import static pl.agh.kis.seirsimulation.model.data.MapData.getCellAtIndex;
 import static pl.agh.kis.seirsimulation.model.data.MapData.getNeighboursOfCell;
 
+@Slf4j
 @Component
 public class DiseaseProcess {
 
@@ -79,10 +81,9 @@ public class DiseaseProcess {
     }
 
     public void simulateDayAtSingleCell(Cell cell) {
-        System.out.println("scm" + cell.getMigratedStateCountMap());
         int[] changes = diseaseStrategy
                 .getDailyChanges(cell);
-        System.out.println("changes" + Arrays.toString(changes));
+        log.debug("changes" + Arrays.toString(changes));
         Map<Pair<Integer, Integer>, List<Integer>> immigrants = cell.getImmigrants();
         List<Integer> immigrantChangesSum = new ArrayList<>(Collections.nCopies(4, 0));
         int cellPeopleSum = cell.getStateCountMap().stream().mapToInt(Integer::intValue).sum();
@@ -93,25 +94,23 @@ public class DiseaseProcess {
                         (double) (immigrantsFrom.get(j) * changes[j]) / cellPeopleSum));
                 immigrantChangesSum.set(j, immigrantChangesSum.get(j) + (int) round(
                         (double) (immigrantsFrom.get(j) * changes[j]) / cellPeopleSum));
-                System.out.println((int) round((double) (immigrantsFrom.get(j) * changes[j]) / cellPeopleSum));
+//                System.out.println((int) round((double) (immigrantsFrom.get(j) * changes[j]) / cellPeopleSum));
             }
             immigrants.put(key, immigrantsFrom);
         }
-        System.out.println("immigrants" + immigrants);
+        log.debug("immigrants" + immigrants);
         cell.setImmigrants(immigrants);
-        System.out.println(immigrantChangesSum);
         //TODO manage deaths
         cell.setD(cell.getD() + diseaseStrategy.calculateDiseaseDeaths(cell.getStateCountMap()));
         for (int j = 0; j < cell.getStateCountMap().size(); j++) {
             cell.getStateCountMap().set(j, cell.getStateCountMap().get(j) + changes[j] - immigrantChangesSum.get(j));
         }
-        //        cell.setStateCountMap(stateCountMap);
-        System.out.println(cell);
     }
 
-    private void makeMove() {
-        for (int y = 1; y <= 1; y++) { //TODO CHANGE FOR REAL LOOP
-            for (int x = 1; x <= 1; x++) {
+    // TODO: 28.04.2020 move to movementExecutor class
+    public void makeMove() {
+        for (int y = 0; y < MapData.getGridMap().size(); y++) {
+            for (int x = 0; x < MapData.getGridMap().get(0).size(); x++) {
                 var neighbours = getNeighboursOfCell(new Pair<>(x, y));
                 long notEmptyNeighbours = neighbours.stream()
                         .filter(e -> getCellAtIndex(e).getStateCountMap().stream().mapToInt(Integer::intValue).sum()
@@ -132,17 +131,30 @@ public class DiseaseProcess {
         }
     }
 
+    // TODO: 28.04.2020 move to movementExecutor class
     private List<Integer> getMovingPeople(Cell c, int notEmptyNeighbours) {
         return IntStream.range(0, c.getStateCountMap().size()).map(index -> (int) round(
                 c.getStateCountMap().get(index) * (isSick.test(index) ? MOVING_PPL_SICK : MOVING_PPL_PERC)
                         / notEmptyNeighbours)).boxed().collect(Collectors.toList());
     }
 
+    // TODO: 28.04.2020 move to movementExecutor class
     public void makeMoveBack(Pair<Integer, Integer> source) {
         Cell sourceCell = getCellAtIndex(source);
-        List<Integer> sourceSCM = sourceCell.getStateCountMap();
         List<Integer> immigrantsFrom;
-        var neighbours = getNeighboursOfCell(source);
+        for (var immigrantKey : sourceCell.getImmigrants().keySet()) {
+            immigrantsFrom = sourceCell.getImmigrants().getOrDefault(immigrantKey, Collections.emptyList());
+            List<Integer> neighbourSCM = getCellAtIndex(immigrantKey).getStateCountMap();
+            for (int j = 0; j < sourceCell.getImmigrants().get(immigrantKey).size(); j++) {
+                neighbourSCM.set(j, neighbourSCM.get(j) + immigrantsFrom.get(j));
+            }
+        }
+        sourceCell.getImmigrants().clear();
+
+    }
+
+    public void makeMoveBack(Cell sourceCell) {
+        List<Integer> immigrantsFrom;
         for (var immigrantKey : sourceCell.getImmigrants().keySet()) {
             immigrantsFrom = sourceCell.getImmigrants().getOrDefault(immigrantKey, Collections.emptyList());
             List<Integer> neighbourSCM = getCellAtIndex(immigrantKey).getStateCountMap();

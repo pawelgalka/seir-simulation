@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.Cell;
+import pl.agh.kis.seirsimulation.model.Simulation;
 import pl.agh.kis.seirsimulation.model.State;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 
@@ -29,6 +30,8 @@ import java.util.Objects;
 public class GuiUpdater {
 
     @Autowired GuiContext guiContext;
+
+    @Autowired Simulation simulation;
 
     private Thread thread;
 
@@ -80,10 +83,12 @@ public class GuiUpdater {
 
     public void updateTest() {
         log.debug("update");
+        simulation.step();
         updateLabels(State.I.getState(), guiContext.getGridPane());
         updateDataTable();
         updateChartData();
     }
+
     private void updateChartData() {
         final LineChart<String, Number> lineChart = guiContext.getHistory();
         var seriesCategory = String.valueOf(guiContext.getDayOfSim());

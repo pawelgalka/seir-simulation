@@ -13,7 +13,7 @@ public class SeirStrategy implements DiseaseStrategy {
 
     @Override
     public int calculateSusceptibleChange(List<Integer> stateCount, int stateCountSum) {
-        System.out.println((BIRTH_RATE*stateCountSum)-(DEATH_RATE*stateCount.get(0))-((CONTACT_RATE*stateCount.get(2)*stateCount.get(0))/stateCountSum));
+//        System.out.println((BIRTH_RATE*stateCountSum)-(DEATH_RATE*stateCount.get(0))-((CONTACT_RATE*stateCount.get(2)*stateCount.get(0))/stateCountSum));
         return (int) round((BIRTH_RATE*stateCountSum)-(DEATH_RATE*stateCount.get(0))-((CONTACT_RATE*stateCount.get(2)*stateCount.get(0))/stateCountSum));
     }
 

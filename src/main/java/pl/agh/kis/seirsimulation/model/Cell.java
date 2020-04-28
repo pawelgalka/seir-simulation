@@ -49,6 +49,6 @@ public class Cell {
         return MigratedSCM;
     }
 
-    public static IntPredicate isSick = index -> 2 >= index && index >= 1;
+    public static final IntPredicate isSick = index -> 2 >= index && index >= 1;
 
 }

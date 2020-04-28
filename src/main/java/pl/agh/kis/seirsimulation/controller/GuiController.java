@@ -131,13 +131,11 @@ public class GuiController implements Initializable {
         guiContext.setNCols(36);
         step.setDisable(true);
         run.setOnMouseClicked(mouseEvent -> {
-            simulation.run();
             step.setDisable(true);
             guiContext.setSimRunning(true);
             guiUpdater.run();
         });
         pause.setOnMouseClicked(mouseEvent -> {
-            simulation.pause();
             step.setDisable(false);
             guiContext.setSimRunning(false);
         });
