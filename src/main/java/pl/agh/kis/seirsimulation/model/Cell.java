@@ -1,42 +1,54 @@
 package pl.agh.kis.seirsimulation.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.javatuples.Pair;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static pl.agh.kis.seirsimulation.model.configuration.Configuration.*;
-
 @Data
+@NoArgsConstructor
+@Component
 public class Cell {
     private List<Integer> stateCountMap;
     private Integer peopleLimit;
-
+    private Integer D;
+    private Map<Pair<Integer,Integer>, List<Integer>> immigrants;
     public Cell(Integer initCount) {
-        stateCountMap = IntStream.range(1, LATENCY).mapToObj(x -> 0).collect(Collectors.toList());
+        stateCountMap = IntStream.range(0, 4).mapToObj(x -> 0).collect(Collectors.toList());
         stateCountMap.set(0, initCount);
         peopleLimit = 2 * initCount;
+        D = 0;
+        immigrants= new HashMap<>();
     }
 
-    public void calculateBirthChange() {
-        //S
-        stateCountMap.set(0, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE) * stateCountMap.get(0));
-        //E
-        for (var i = 1; i <= EXPOSED_TIME + 1; i++) {
-            stateCountMap
-                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(i));
+
+
+    public int[] getImmigrantsSummed(){
+        int[]sum={0,0,0,0};
+        immigrants.forEach((index,list)->{
+            for(int i=0;i<4;i++) {
+                sum[i] += list.get(i);
+            }
+        });
+        return sum;
+    }
+
+    public List<Integer> getMigratedStateCountMap(){
+        int[]immigrated=getImmigrantsSummed();
+        List<Integer> MigratedSCM=new ArrayList<>();
+        for(int i=0;i<getStateCountMap().size();i++){
+            MigratedSCM.add(getStateCountMap().get(i)+immigrated[i]);
         }
-        //I
-        for (var i = 2 + EXPOSED_TIME; i <= LATENCY - 2; i++) {
-            stateCountMap
-                    .set(i, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE - VIRUS_MORTABILITY) * stateCountMap.get(i));
-        }
-        //R
-        stateCountMap.set(LATENCY - 1, (int) Math.round(1 + BIRTH_RATE - DEATH_RATE) * stateCountMap.get(stateCountMap.size()));
+
+        return MigratedSCM;
     }
 
-    public void calculateInfections(List<Cell> immigrants){
+    public static IntPredicate isSick = index -> 2 >= index && index >= 1;
 
-    }
 }
