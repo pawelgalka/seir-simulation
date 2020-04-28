@@ -65,19 +65,22 @@ public class DiseaseProcess {
                 new ArrayList<>(Arrays.asList(cell1, cell4, cell7, cell10)),
                 new ArrayList<>(Arrays.asList(cell2, cell5, cell8, cell11))));
 
-        System.out.println("cell4 " + cell4.getStateCountMap());
-        System.out.println("cell7" + cell7.getStateCountMap());
-        makeMove();
 
-        System.out.println("cell4 " + cell4);
-        System.out.println("cell7" + cell7);
-        simulateDayAtSingleCell(cell7);
-        System.out.println("cell4 " + cell4);
-        System.out.println("cell7" + cell7);
-        makeMoveBack(new Pair<>(2, 1));
-        System.out.println(cell7.getImmigrants());
-        System.out.println("cell4 " + cell4);
-        System.out.println("cell7" + cell7);
+        System.out.println(Arrays.toString(diseaseStrategy.getDailyChanges(cell7)));
+
+//        System.out.println("cell4 " + cell4.getStateCountMap());
+//        System.out.println("cell7" + cell7.getStateCountMap());
+//        makeMove();
+//
+//        System.out.println("cell4 " + cell4);
+//        System.out.println("cell7" + cell7);
+//        simulateDayAtSingleCell(cell7);
+//        System.out.println("cell4 " + cell4);
+//        System.out.println("cell7" + cell7);
+//        makeMoveBack(new Pair<>(2, 1));
+//        System.out.println(cell7.getImmigrants());
+//        System.out.println("cell4 " + cell4);
+//        System.out.println("cell7" + cell7);
     }
 
     public void simulateDayAtSingleCell(Cell cell) {
@@ -100,8 +103,7 @@ public class DiseaseProcess {
         }
         log.debug("immigrants" + immigrants);
         cell.setImmigrants(immigrants);
-        //TODO manage deaths
-        cell.setD(cell.getD() + diseaseStrategy.calculateDiseaseDeaths(cell.getStateCountMap()));
+        cell.setD(cell.getD() + changes[changes.length-1]);
         for (int j = 0; j < cell.getStateCountMap().size(); j++) {
             cell.getStateCountMap().set(j, cell.getStateCountMap().get(j) + changes[j] - immigrantChangesSum.get(j));
         }

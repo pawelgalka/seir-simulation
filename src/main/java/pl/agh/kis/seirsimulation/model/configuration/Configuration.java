@@ -6,11 +6,11 @@ import pl.agh.kis.seirsimulation.model.strategy.StrategyEnum;
 @Data
 public class Configuration {
     //Model Config
-    public static StrategyEnum DISEASE_STRATEGY = StrategyEnum.STANDARD_SEIR;
+    public static StrategyEnum DISEASE_STRATEGY = StrategyEnum.NO_VITAL_SEIR;
     public static double MOVING_PPL_PERC=0.15;
     public static double MOVING_PPL_SICK=0.000001;
     //Virus Config
-    public static double VIRUS_MORTABILITY=0.037;
+    public static double VIRUS_MORTABILITY=0.035;
     public static double EXPOSED_TIME = 6;
     public static double INFECTED_DAYS = 12;
     public static double REPRODUCTION_NUMBER=4;
@@ -23,6 +23,8 @@ public class Configuration {
     public static int MIN_RANDOM_CELL = 30;
 
     public static double CONTACT_RATE=REPRODUCTION_NUMBER*((DEATH_RATE+(1/EXPOSED_TIME))/(1/EXPOSED_TIME))*(DEATH_RATE+(1/INFECTED_DAYS));
+
+    public static double CONTACT_RATE_NO_VITAL=REPRODUCTION_NUMBER*(1/INFECTED_DAYS);
 
     public static double floorOrCeil(double arg){
         if(arg>0){
