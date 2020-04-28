@@ -7,6 +7,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -22,9 +23,6 @@ import pl.agh.kis.seirsimulation.model.State;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -70,7 +68,7 @@ public class GuiUpdater {
     }
 
     public void updateDataTable() {
-        var data = guiContext.getData();
+        var data = guiContext.getSimulationData();
         var numbers = guiContext.getTableView();
         data.get(0).setValue(String.valueOf(guiContext.getDayOfSim()));
         data.get(1).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.S)));
@@ -86,7 +84,6 @@ public class GuiUpdater {
         updateDataTable();
         updateChartData();
     }
-
     private void updateChartData() {
         final LineChart<String, Number> lineChart = guiContext.getHistory();
         var seriesCategory = String.valueOf(guiContext.getDayOfSim());
@@ -97,6 +94,7 @@ public class GuiUpdater {
     }
 
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface
+
     public void prepareChart() {
         final Axis<String> xAxis = guiContext.getHistory().getXAxis();
         final NumberAxis yAxis = (NumberAxis) guiContext.getHistory().getYAxis();
@@ -124,5 +122,16 @@ public class GuiUpdater {
         lineChart.getData().add(series_E);
         lineChart.getData().add(series_I);
         lineChart.getData().add(series_R);
+    }
+
+    public void updateDiseaseParams() {
+        var table = guiContext.getParamsTable();
+        var data = table.getItems();
+        log.debug(String.valueOf(guiContext.getDiseaseConfig().getIncubation()));
+        data.get(0).setValue(String.valueOf(guiContext.getDiseaseConfig().getIncubation()));
+        data.get(1).setValue(String.valueOf(guiContext.getDiseaseConfig().getInfection()));
+        data.get(2).setValue(String.valueOf(guiContext.getDiseaseConfig().getMortality()));
+        data.get(3).setValue(String.valueOf(guiContext.getDiseaseConfig().getReproduction()));
+        table.refresh();
     }
 }

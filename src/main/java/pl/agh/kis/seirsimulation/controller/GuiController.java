@@ -10,11 +10,13 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 import pl.agh.kis.seirsimulation.model.Simulation;
 import pl.agh.kis.seirsimulation.model.State;
 import pl.agh.kis.seirsimulation.model.configuration.Configuration;
+import pl.agh.kis.seirsimulation.model.configuration.disease.DiseaseConfig;
 import pl.agh.kis.seirsimulation.model.data.DataLoader;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 import pl.agh.kis.seirsimulation.view.GuiUpdater;
@@ -29,7 +32,10 @@ import pl.agh.kis.seirsimulation.view.GuiUtils;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -79,7 +85,7 @@ public class GuiController implements Initializable {
     Button load;
 
     @FXML
-    ChoiceBox<String> choice;
+    ComboBox<String> choice;
 
     @FXML
     TableView<TableData> numbers;
@@ -96,7 +102,13 @@ public class GuiController implements Initializable {
     @FXML
     NumberAxis yAxis;
 
-    private final ObservableList<TableData> data =
+    @FXML
+    ComboBox<String> diseaseChooser;
+
+    @FXML
+    TableView<TableData> diseaseInfo;
+
+    private final ObservableList<TableData> simulationData =
             FXCollections.observableArrayList(
                     new TableData("Day", "0"),
                     new TableData("Total population", ""),
@@ -104,6 +116,15 @@ public class GuiController implements Initializable {
                     new TableData("Infectious", "0"),
                     new TableData("Recovered", "0")
             );
+
+    private final ObservableList<TableData> diseaseParamsData =
+            FXCollections.observableArrayList(
+                    new TableData("Incubated period", ""),
+                    new TableData("Infectious period", ""),
+                    new TableData("Mortality indicator", ""),
+                    new TableData("Reproduction index", "")
+            );
+
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
         guiContext.setNRows(36);
@@ -129,9 +150,11 @@ public class GuiController implements Initializable {
         });
 
         addCountryChoiceListener();
+        fillDiseaseChoice();
         loadGraphicalMap();
         guiContext.setTableView(numbers);
-        guiContext.setData(data);
+        guiContext.setSimulationData(simulationData);
+        guiContext.setParamsTable(diseaseInfo);
         guiContext.setGridPane(grid);
         guiContext.setHistory(history);
         guiContext.setXAxis(xAxis);
@@ -160,8 +183,6 @@ public class GuiController implements Initializable {
         });
     }
 
-
-
     private void loadGraphicalMap() {
         load.setOnMouseClicked(mouseEvent -> ofNullable(guiContext.getCountry()).ifPresentOrElse(country -> {
             log.debug("Loading map of {}", country);
@@ -178,11 +199,11 @@ public class GuiController implements Initializable {
             guiUpdater.prepareChart();
             numbers.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
             numbers.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("value"));
-            numbers.setItems(data);
-            numbers.setFixedCellSize((numbers.getHeight() - 40) / data.size());
+            numbers.setItems(simulationData);
+            numbers.setFixedCellSize((numbers.getHeight() - 40) / simulationData.size());
             numbers.prefHeightProperty()
                     .bind(Bindings.size(numbers.getItems()).multiply(numbers.getFixedCellSize()).add(30));
-
+            log.debug(String.valueOf(Bindings.size(numbers.getItems()).multiply(numbers.getFixedCellSize()).add(30)));
         }, () -> log.error("Could not load map")));
     }
 
@@ -202,7 +223,7 @@ public class GuiController implements Initializable {
                 guiUpdater.updateDataTable();
                 label.setOnMouseClicked(mouseEvent -> {
                     MapData.addIllnessToCell(new Pair<>(label.getRow(), label.getCol()));
-                    guiUpdater.updateLabels(State.I.getState(),grid);
+                    guiUpdater.updateLabels(State.I.getState(), grid);
                     guiUpdater.updateDataTable();
                 });
             }
@@ -210,11 +231,28 @@ public class GuiController implements Initializable {
         log.debug(String.valueOf(grid.getColumnCount()));
     }
 
-
     private void addCountryChoiceListener() {
+        choice.setPromptText("Choose country");
         choice.setItems(FXCollections.observableArrayList("Polska"));
         choice.getSelectionModel().selectedItemProperty().addListener(
                 (observableValue, oldChoice, newChoice) -> guiContext.setCountry(newChoice));
     }
 
+    private void fillDiseaseChoice() {
+        diseaseInfo.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
+        diseaseInfo.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("value"));
+        diseaseInfo.setItems(diseaseParamsData);
+        diseaseInfo.setFixedCellSize(diseaseInfo.getPrefHeight() / diseaseParamsData.size() - 10);
+        diseaseInfo.minHeightProperty()
+                .bind(Bindings.size(diseaseInfo.getItems()).multiply(diseaseInfo.getFixedCellSize()).add(30));
+        diseaseChooser.setPromptText("Choose disease");
+        diseaseChooser.setItems(FXCollections.observableArrayList("FLU", "AH1N1", "SARS", "COVID19"));
+        diseaseChooser.getSelectionModel().selectedItemProperty()
+                .addListener(((observableValue, oldChoice, newChoice) -> {
+                    guiContext.setDiseaseConfig(
+                            DiseaseConfig.valueOf(newChoice));
+                    log.debug(String.valueOf(guiContext.getDiseaseConfig()));
+                    guiUpdater.updateDiseaseParams();
+                }));
+    }
 }

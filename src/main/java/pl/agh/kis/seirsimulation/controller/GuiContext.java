@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import pl.agh.kis.seirsimulation.model.configuration.disease.DiseaseConfig;
 
 @Data
 @Getter
@@ -25,11 +25,13 @@ public class GuiContext {
     private int nCols;
     private int dayOfSim;
     private TableView<TableData> tableView;
-    private ObservableList<TableData> data;
+    private ObservableList<TableData> simulationData;
     private GridPane gridPane;
     private LineChart<String, Number> history;
     private CategoryAxis xAxis;
     private NumberAxis yAxis;
+    private DiseaseConfig diseaseConfig;
+    private TableView<TableData> paramsTable;
 
     public void dayStep(){
         dayOfSim++;
