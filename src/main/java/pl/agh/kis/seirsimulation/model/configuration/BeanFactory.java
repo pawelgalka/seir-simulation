@@ -12,15 +12,19 @@ import static pl.agh.kis.seirsimulation.model.strategy.StrategyFactory.getStrate
 @Configuration
 public class BeanFactory {
 
-    @Bean DataLoader dataLoader(){
+    @Bean DataLoader dataLoader() {
         return new DataLoader();
     }
 
-    @Bean Simulation simulation(){
+    @Bean Simulation simulation() {
         return new Simulation();
     }
 
-    @Bean GuiContext guiContext(){ return new GuiContext();}
+    @Bean GuiContext guiContext() {
+        return new GuiContext();
+    }
 
-    @Bean DiseaseStrategy diseaseStrategy(){ return getStrategy();}
+    @Bean DiseaseStrategy diseaseStrategy() {
+        return getStrategy();
+    }
 }

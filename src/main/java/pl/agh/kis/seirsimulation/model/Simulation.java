@@ -23,25 +23,6 @@ public class Simulation {
     @Autowired
     DiseaseProcess diseaseProcess;
 
-    private boolean isRunning;
-
-    private Timer timer;
-
-    public void run() {
-        log.debug("sim running");
-        if(!isRunning){
-            isRunning = true;
-            timer = new Timer();
-            timer.schedule(new EpidemicStep(), 0, 500);
-        }
-    }
-
-    public void pause() {
-        log.debug("sim paused");
-        isRunning = false;
-        timer.cancel();
-    }
-
     public void step() {
         log.debug("stepping");
         context.dayStep();
@@ -55,12 +36,6 @@ public class Simulation {
             for (var cell : row){
                 diseaseProcess.makeMoveBack(cell);
             }
-        }
-    }
-
-    class EpidemicStep extends TimerTask {
-        public void run() {
-           Simulation.this.step();
         }
     }
 }

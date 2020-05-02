@@ -7,7 +7,6 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -21,6 +20,7 @@ import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.Cell;
 import pl.agh.kis.seirsimulation.model.Simulation;
 import pl.agh.kis.seirsimulation.model.State;
+import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 
 import java.util.Objects;
@@ -82,7 +82,6 @@ public class GuiUpdater {
     }
 
     public void updateTest() {
-        log.debug("update");
         simulation.step();
         updateLabels(State.I.getState(), guiContext.getGridPane());
         updateDataTable();
@@ -92,10 +91,10 @@ public class GuiUpdater {
     private void updateChartData() {
         final LineChart<String, Number> lineChart = guiContext.getHistory();
         var seriesCategory = String.valueOf(guiContext.getDayOfSim());
-        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
-        lineChart.getData().get(1).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
-        lineChart.getData().get(2).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
-        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
+//        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
+        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
+        lineChart.getData().get(1).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
+        lineChart.getData().get(2).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
     }
 
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface
@@ -123,7 +122,7 @@ public class GuiUpdater {
         series_I.setName("I");
         series_R.setName("R");
 
-        lineChart.getData().add(series_S);
+//        lineChart.getData().add(series_S);
         lineChart.getData().add(series_E);
         lineChart.getData().add(series_I);
         lineChart.getData().add(series_R);
@@ -132,11 +131,32 @@ public class GuiUpdater {
     public void updateDiseaseParams() {
         var table = guiContext.getParamsTable();
         var data = table.getItems();
-        log.debug(String.valueOf(guiContext.getDiseaseConfig().getIncubation()));
         data.get(0).setValue(String.valueOf(guiContext.getDiseaseConfig().getIncubation()));
         data.get(1).setValue(String.valueOf(guiContext.getDiseaseConfig().getInfection()));
         data.get(2).setValue(String.valueOf(guiContext.getDiseaseConfig().getMortality()));
         data.get(3).setValue(String.valueOf(guiContext.getDiseaseConfig().getReproduction()));
         table.refresh();
+    }
+
+    public void updateCountryInfo() {
+        var table = guiContext.getParamsTable();
+        var data = table.getItems();
+        data.get(4).setValue(String.valueOf(Configuration.BIRTH_RATE));
+        data.get(5).setValue(String.valueOf(Configuration.DEATH_RATE));
+        data.get(6).setValue(String.valueOf(Configuration.MOVING_PPL_PERC));
+        data.get(7).setValue(String.valueOf(Configuration.MOVING_PPL_SICK));
+        table.refresh();
+    }
+
+    public void cleanSimData() {
+        var table = guiContext.getParamsTable();
+        var data = table.getItems();
+        var populationTable = guiContext.getTableView();
+        LineChart<String, Number> lineChart = guiContext.getHistory();
+
+        data.forEach(row -> row.setValue(""));
+        lineChart.getData().forEach(series -> series.getData().clear());
+        populationTable.getItems().forEach(row -> row.setValue(""));
+
     }
 }

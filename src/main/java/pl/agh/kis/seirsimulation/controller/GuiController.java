@@ -9,7 +9,6 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -122,7 +121,11 @@ public class GuiController implements Initializable {
                     new TableData("Incubated period", ""),
                     new TableData("Infectious period", ""),
                     new TableData("Mortality indicator", ""),
-                    new TableData("Reproduction index", "")
+                    new TableData("Reproduction index", ""),
+                    new TableData("Birth Rate", ""),
+                    new TableData("Death Rate", ""),
+                    new TableData("Contact healthy rate", ""),
+                    new TableData("Contact ill rate", "")
             );
 
 
@@ -145,6 +148,9 @@ public class GuiController implements Initializable {
         });
         distribute.setOnMouseClicked(mouseEvent -> {
             distributeRandomIll();
+        });
+        reload.setOnMouseClicked(mouseEvent -> {
+            guiUpdater.cleanSimData();
         });
 
         addCountryChoiceListener();
@@ -219,6 +225,7 @@ public class GuiController implements Initializable {
                 GridPane.setRowIndex(label, j);
                 grid.getChildren().add(label);
                 guiUpdater.updateDataTable();
+                guiUpdater.updateCountryInfo();
                 label.setOnMouseClicked(mouseEvent -> {
                     MapData.addIllnessToCell(new Pair<>(label.getRow(), label.getCol()));
                     guiUpdater.updateLabels(State.I.getState(), grid);
@@ -249,7 +256,7 @@ public class GuiController implements Initializable {
                 .addListener(((observableValue, oldChoice, newChoice) -> {
                     guiContext.setDiseaseConfig(
                             DiseaseConfig.valueOf(newChoice));
-                    log.debug(String.valueOf(guiContext.getDiseaseConfig()));
+                    Configuration.setDiseaseConfig(DiseaseConfig.valueOf(newChoice));
                     guiUpdater.updateDiseaseParams();
                 }));
     }
