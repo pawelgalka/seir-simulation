@@ -1,7 +1,12 @@
 package pl.agh.kis.seirsimulation.model.strategy;
 
+import org.javatuples.Pair;
 import pl.agh.kis.seirsimulation.model.Cell;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import static pl.agh.kis.seirsimulation.model.configuration.Configuration.*;
 import static pl.agh.kis.seirsimulation.model.data.ChangesValidator.randomlyValidateDailyChanges;
 
@@ -36,8 +41,15 @@ public class SeirStrategy implements DiseaseStrategy {
 
     @Override
     public int[] getDailyChanges(Cell cell) {
-        var stateCount = cell.getStateCountMap();
-        var stateCountSum = cell.getStateCountMap().stream().mapToInt(Integer::intValue).sum();
+        List<Integer> stateCount = new ArrayList<>(cell.getStateCountMap());
+        Map<Pair<Integer,Integer>, List<Integer>> immigrants=cell.getImmigrants();
+        for(var key : immigrants.keySet()){
+            List<Integer> immigrantsFrom = new ArrayList<>(immigrants.get(key));
+            for (int j = 0; j < immigrantsFrom.size(); j++){
+                stateCount.set(j,stateCount.get(j)+immigrantsFrom.get(j));
+            }
+        }
+        var stateCountSum = (double) stateCount.stream().mapToInt(Integer::intValue).sum();
         return randomlyValidateDailyChanges(new int[]{calculateSusceptibleChange(stateCount,stateCountSum),calculateExposedChange(stateCount,stateCountSum),calculateInfectedChange(stateCount),calculateRecoveredChange(stateCount),calculateDiseaseDeaths(stateCount)});
     }
 }

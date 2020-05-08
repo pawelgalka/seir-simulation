@@ -124,8 +124,8 @@ public class GuiController implements Initializable {
                     new TableData("Reproduction index", ""),
                     new TableData("Birth Rate", ""),
                     new TableData("Death Rate", ""),
-                    new TableData("Contact healthy rate", ""),
-                    new TableData("Contact ill rate", "")
+                    new TableData("Moving healthy rate", ""),
+                    new TableData("Moving ill rate", "")
             );
 
 

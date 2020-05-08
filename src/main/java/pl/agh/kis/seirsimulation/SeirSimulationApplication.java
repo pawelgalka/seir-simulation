@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import pl.agh.kis.seirsimulation.model.DiseaseProcess;
 
 @SpringBootApplication
 public class SeirSimulationApplication extends Application {

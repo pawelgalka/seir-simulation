@@ -66,7 +66,7 @@ public class GuiUpdater {
         ((Label) Objects.requireNonNull(GuiUtils.getNodeFromGridPane(grid, value1.getValue1(), value1.getValue0())))
                 .setBackground(new Background(new BackgroundFill(new Color(
                         1, 0, 0,
-                        (double) cellAtIndex.getStateCountMap().get(state.getState()) / max), CornerRadii.EMPTY,
+                        Math.max(0,(double) cellAtIndex.getStateCountMap().get(state.getState()) / max)), CornerRadii.EMPTY,
                         Insets.EMPTY)));
     }
 
@@ -74,7 +74,7 @@ public class GuiUpdater {
         var data = guiContext.getSimulationData();
         var numbers = guiContext.getTableView();
         data.get(0).setValue(String.valueOf(guiContext.getDayOfSim()));
-        data.get(1).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.S)));
+        data.get(1).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.S)+MapData.getNumberOfStateSummary(State.I)+MapData.getNumberOfStateSummary(State.E)+MapData.getNumberOfStateSummary(State.R)));
         data.get(2).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.E)));
         data.get(3).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.I)));
         data.get(4).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.R)));

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Map;
 
 @Slf4j
 @NoArgsConstructor
@@ -26,17 +24,29 @@ public class Simulation {
     public void step() {
         log.debug("stepping");
         context.dayStep();
+/*        System.out.println("before move");
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
         diseaseProcess.makeMove();
+/*        System.out.println("moved");
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
         for (var row : MapData.getGridMap()){
             for (var cell : row){
                 diseaseProcess.simulateDayAtSingleCell(cell);
             }
         }
+/*        System.out.println("simulated");
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
         for (var row : MapData.getGridMap()){
             for (var cell : row){
                 diseaseProcess.makeMoveBack(cell);
             }
         }
+/*        System.out.println("back home");
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
+        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
     }
 }
 
