@@ -11,6 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.agh.kis.seirsimulation.model.configuration.disease.DiseaseConfig;
+import pl.agh.kis.seirsimulation.output.writer.OutputDataDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Getter
@@ -27,11 +31,13 @@ public class GuiContext {
     private TableView<TableData> tableView;
     private ObservableList<TableData> simulationData;
     private GridPane gridPane;
-    private LineChart<String, Number> history;
+    private LineChart<String, Number> chartData;
     private CategoryAxis xAxis;
     private NumberAxis yAxis;
     private DiseaseConfig diseaseConfig;
     private TableView<TableData> paramsTable;
+    private List<OutputDataDto> historyData = new ArrayList<>();
+    private boolean isDistancing = false;
 
     public void dayStep(){
         dayOfSim++;

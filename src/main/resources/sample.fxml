@@ -4,6 +4,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -31,18 +32,20 @@
             <Button fx:id="distribute" layoutX="14.0" layoutY="113.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="359.0" text="Distribute randomly 300" />
             <Button fx:id="load" layoutX="320.0" layoutY="164.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="53.0" text="Load" />
             <Button fx:id="show" layoutX="14.0" layoutY="218.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="359.0" text="Show population" />
-            <AnchorPane layoutX="14.0" layoutY="271.0" prefHeight="316.0" prefWidth="359.0">
+            <AnchorPane layoutX="14.0" layoutY="271.0" prefHeight="288.0" prefWidth="359.0">
                <children>
-                  <TableView fx:id="diseaseInfo" layoutX="14.0" layoutY="58.0" prefHeight="239.0" prefWidth="335.0">
+                  <TableView fx:id="diseaseInfo" layoutX="14.0" layoutY="45.0" prefHeight="239.0" prefWidth="335.0">
                     <columns>
                       <TableColumn prefWidth="197.0" text="Parameter name" />
                       <TableColumn prefWidth="137.0" text="Value" />
                     </columns>
                   </TableView>
-                  <ComboBox fx:id="diseaseChooser" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="335.0" />
+                  <ComboBox fx:id="diseaseChooser" layoutX="14.0" layoutY="8.0" prefHeight="25.0" prefWidth="335.0" />
                </children>
             </AnchorPane>
             <ComboBox fx:id="choice" layoutX="14.0" layoutY="164.0" prefHeight="25.0" prefWidth="292.0" />
+            <Button fx:id="export" layoutX="77.0" layoutY="559.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="117.0" text="Export to CSV" />
+            <CheckBox fx:id="distancing" layoutX="201.0" layoutY="563.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="117.0" text="Social Distancing" />
          </children>
       </AnchorPane>
       <SplitPane dividerPositions="0.4" layoutY="600.0" prefHeight="400.0" prefWidth="1000.0">

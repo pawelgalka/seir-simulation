@@ -22,6 +22,7 @@ import pl.agh.kis.seirsimulation.model.Simulation;
 import pl.agh.kis.seirsimulation.model.State;
 import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 import pl.agh.kis.seirsimulation.model.data.MapData;
+import pl.agh.kis.seirsimulation.output.writer.OutputDataDto;
 
 import java.util.Objects;
 
@@ -66,7 +67,8 @@ public class GuiUpdater {
         ((Label) Objects.requireNonNull(GuiUtils.getNodeFromGridPane(grid, value1.getValue1(), value1.getValue0())))
                 .setBackground(new Background(new BackgroundFill(new Color(
                         1, 0, 0,
-                        Math.max(0,(double) cellAtIndex.getStateCountMap().get(state.getState()) / max)), CornerRadii.EMPTY,
+                        Math.max(0, (double) cellAtIndex.getStateCountMap().get(state.getState()) / max)),
+                        CornerRadii.EMPTY,
                         Insets.EMPTY)));
     }
 
@@ -74,7 +76,9 @@ public class GuiUpdater {
         var data = guiContext.getSimulationData();
         var numbers = guiContext.getTableView();
         data.get(0).setValue(String.valueOf(guiContext.getDayOfSim()));
-        data.get(1).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.S)+MapData.getNumberOfStateSummary(State.I)+MapData.getNumberOfStateSummary(State.E)+MapData.getNumberOfStateSummary(State.R)));
+        data.get(1).setValue(String.valueOf(
+                MapData.getNumberOfStateSummary(State.S) + MapData.getNumberOfStateSummary(State.I) + MapData
+                        .getNumberOfStateSummary(State.E) + MapData.getNumberOfStateSummary(State.R)));
         data.get(2).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.E)));
         data.get(3).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.I)));
         data.get(4).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.R)));
@@ -84,12 +88,20 @@ public class GuiUpdater {
     public void updateTest() {
         simulation.step();
         updateLabels(State.I.getState(), guiContext.getGridPane());
+        updateHistory();
         updateDataTable();
         updateChartData();
     }
 
+    private void updateHistory() {
+        guiContext.getHistoryData().add(OutputDataDto.builder().susceptible(MapData.getNumberOfStateSummary(State.S))
+                .exposed(MapData.getNumberOfStateSummary(State.E)).infectious(
+                        MapData.getNumberOfStateSummary(State.I)).recovered(MapData.getNumberOfStateSummary(State.R))
+                .day(guiContext.getDayOfSim()).build());
+    }
+
     private void updateChartData() {
-        final LineChart<String, Number> lineChart = guiContext.getHistory();
+        final LineChart<String, Number> lineChart = guiContext.getChartData();
         var seriesCategory = String.valueOf(guiContext.getDayOfSim());
 //        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
         lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
@@ -100,24 +112,22 @@ public class GuiUpdater {
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface
 
     public void prepareChart() {
-        final Axis<String> xAxis = guiContext.getHistory().getXAxis();
-        final NumberAxis yAxis = (NumberAxis) guiContext.getHistory().getYAxis();
+        final Axis<String> xAxis = guiContext.getChartData().getXAxis();
+        final NumberAxis yAxis = (NumberAxis) guiContext.getChartData().getYAxis();
 
         xAxis.setLabel("Day");
         xAxis.setAnimated(false);
         yAxis.setLabel("NO of people");
         yAxis.setAnimated(false);
 
-        final LineChart<String, Number> lineChart = guiContext.getHistory();
+        final LineChart<String, Number> lineChart = guiContext.getChartData();
         lineChart.setCreateSymbols(false);
         lineChart.setTitle("History chart");
         lineChart.setAnimated(false);
-        XYChart.Series<String, Number> series_S = new XYChart.Series<>();
         XYChart.Series<String, Number> series_E = new XYChart.Series<>();
         XYChart.Series<String, Number> series_I = new XYChart.Series<>();
         XYChart.Series<String, Number> series_R = new XYChart.Series<>();
 
-        series_S.setName("S");
         series_E.setName("E");
         series_I.setName("I");
         series_R.setName("R");
@@ -152,7 +162,7 @@ public class GuiUpdater {
         var table = guiContext.getParamsTable();
         var data = table.getItems();
         var populationTable = guiContext.getTableView();
-        LineChart<String, Number> lineChart = guiContext.getHistory();
+        LineChart<String, Number> lineChart = guiContext.getChartData();
 
         data.forEach(row -> row.setValue(""));
         lineChart.getData().forEach(series -> series.getData().clear());

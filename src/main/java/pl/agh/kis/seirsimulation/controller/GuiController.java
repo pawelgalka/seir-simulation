@@ -8,9 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,6 +24,7 @@ import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 import pl.agh.kis.seirsimulation.model.configuration.disease.DiseaseConfig;
 import pl.agh.kis.seirsimulation.model.data.DataLoader;
 import pl.agh.kis.seirsimulation.model.data.MapData;
+import pl.agh.kis.seirsimulation.output.writer.CSVWriter;
 import pl.agh.kis.seirsimulation.view.GuiUpdater;
 import pl.agh.kis.seirsimulation.view.GuiUtils;
 
@@ -55,6 +54,9 @@ public class GuiController implements Initializable {
 
     @Autowired
     GuiUpdater guiUpdater;
+
+    @Autowired
+    CSVWriter csvWriter;
 
     @FXML
     StackPane mapPane;
@@ -107,6 +109,12 @@ public class GuiController implements Initializable {
     @FXML
     TableView<TableData> diseaseInfo;
 
+    @FXML
+    Button export;
+
+    @FXML
+    CheckBox distancing;
+
     private final ObservableList<TableData> simulationData =
             FXCollections.observableArrayList(
                     new TableData("Day", "0"),
@@ -127,7 +135,6 @@ public class GuiController implements Initializable {
                     new TableData("Moving healthy rate", ""),
                     new TableData("Moving ill rate", "")
             );
-
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
         guiContext.setNRows(36);
@@ -152,7 +159,29 @@ public class GuiController implements Initializable {
         reload.setOnMouseClicked(mouseEvent -> {
             guiUpdater.cleanSimData();
         });
+        export.setOnMouseClicked(mouseEvent -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Export result");
 
+            try {
+                String file = csvWriter.createCSVFile(guiContext.getHistoryData(),
+                        guiContext.getDiseaseConfig().name());
+                alert.setHeaderText("Export successful");
+                alert.setContentText("Exported to " + file);
+            } catch (IOException e) {
+                alert.setAlertType(Alert.AlertType.ERROR);
+                alert.setHeaderText("Export failed");
+                alert.setContentText(e.getMessage());
+            } finally {
+                alert.show();
+            }
+        });
+        distancing.setOnAction(actionEvent -> {
+            if (distancing.isSelected()){
+                guiContext.setDistancing(true);
+            } else guiContext.setDistancing(false);
+            guiUpdater.updateDiseaseParams();
+        });
         addCountryChoiceListener();
         fillDiseaseChoice();
         loadGraphicalMap();
@@ -160,7 +189,7 @@ public class GuiController implements Initializable {
         guiContext.setSimulationData(simulationData);
         guiContext.setParamsTable(diseaseInfo);
         guiContext.setGridPane(grid);
-        guiContext.setHistory(history);
+        guiContext.setChartData(history);
         guiContext.setXAxis(xAxis);
         guiContext.setYAxis(yAxis);
     }
