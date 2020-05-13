@@ -87,6 +87,8 @@ public class GuiUpdater {
 
     public void updateTest() {
         simulation.step();
+        simulation.updateMortality();
+        updateDiseaseParams();
         updateLabels(State.I.getState(), guiContext.getGridPane());
         updateHistory();
         updateDataTable();

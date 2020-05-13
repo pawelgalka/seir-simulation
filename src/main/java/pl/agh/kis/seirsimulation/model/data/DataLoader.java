@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.Math.ceil;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.setMaxHospital;
 
 @Slf4j
 public class DataLoader {
@@ -34,6 +35,7 @@ public class DataLoader {
 
     public void mapData(String country) throws IOException {
         Path file = Paths.get(loadMap(country).getURI());
+        setMaxHospital(country);
 
         Stream<String> lines = Files.lines(file);
         List<List<Integer>> linesParsed = lines

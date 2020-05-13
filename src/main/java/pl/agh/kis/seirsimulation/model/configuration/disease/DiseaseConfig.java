@@ -2,6 +2,7 @@ package pl.agh.kis.seirsimulation.model.configuration.disease;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
@@ -30,7 +31,7 @@ public enum DiseaseConfig {
 
     private final double incubation;
     private final double infection;
-    private final double mortality;
+    @Setter private double mortality;
     @Getter(AccessLevel.NONE)
     private final double reproduction;
 
@@ -46,6 +47,4 @@ public enum DiseaseConfig {
         this.mortality = mortality;
         this.reproduction = reproduction;
     }
-
-
 }
