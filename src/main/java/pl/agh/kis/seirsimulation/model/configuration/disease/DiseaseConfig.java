@@ -1,6 +1,7 @@
 package pl.agh.kis.seirsimulation.model.configuration.disease;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public enum DiseaseConfig {
@@ -11,7 +12,7 @@ public enum DiseaseConfig {
 
     private final double incubation;
     private final double infection;
-    private final double mortality;
+    @Setter private double mortality;
     private final double reproduction;
 
     DiseaseConfig(double incubation, double infection, double mortality, double reproduction) {

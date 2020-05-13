@@ -258,6 +258,7 @@ public class GuiController implements Initializable {
                             DiseaseConfig.valueOf(newChoice));
                     Configuration.setDiseaseConfig(DiseaseConfig.valueOf(newChoice));
                     guiUpdater.updateDiseaseParams();
+                    Configuration.BASE_MORTALITY=Configuration.DISEASE_CONFIG.getMortality();
                 }));
     }
 }

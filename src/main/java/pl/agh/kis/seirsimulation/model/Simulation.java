@@ -3,12 +3,11 @@ package pl.agh.kis.seirsimulation.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 
-import java.util.Map;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.*;
 
 @Slf4j
 @NoArgsConstructor
@@ -21,32 +20,33 @@ public class Simulation {
     @Autowired
     DiseaseProcess diseaseProcess;
 
+    @Autowired
+    Movement movementProcess;
+
     public void step() {
         log.debug("stepping");
         context.dayStep();
-/*        System.out.println("before move");
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
-        diseaseProcess.makeMove();
-/*        System.out.println("moved");
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
+        movementProcess.makeMove();
         for (var row : MapData.getGridMap()){
             for (var cell : row){
                 diseaseProcess.simulateDayAtSingleCell(cell);
             }
         }
-/*        System.out.println("simulated");
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
         for (var row : MapData.getGridMap()){
             for (var cell : row){
-                diseaseProcess.makeMoveBack(cell);
+                movementProcess.makeMoveBack(cell);
             }
         }
-/*        System.out.println("back home");
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getStateCountMap());
-        System.out.println(MapData.getCellAtIndex(new Pair<>(10,10)).getImmigrants());*/
+    }
+
+    public void updateMortality() {
+        if(MapData.getNumberOfStateSummary(State.I)*HOSPITALIZATION_PERC>MAX_HOSPITAL){
+            DISEASE_CONFIG.setMortality(BASE_MORTALITY*2);
+            // TODO: 13.05.2020 implement better formula
+        }
+        else if(MapData.getNumberOfStateSummary(State.I)*HOSPITALIZATION_PERC<=MAX_HOSPITAL){
+            DISEASE_CONFIG.setMortality(BASE_MORTALITY);
+        }
     }
 }
 

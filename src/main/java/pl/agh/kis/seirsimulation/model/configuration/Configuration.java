@@ -14,19 +14,19 @@ public class Configuration {
     public static final double MOVING_PPL_SICK = 0.1;
 
     //Virus Config
+    public static double BASE_MORTALITY;
     public static DiseaseConfig DISEASE_CONFIG;
+    public static double HOSPITALIZATION_PERC=0.15;
 
     //Poland Statistics 2019
     // TODO: 29.04.2020 move to CountryConfig class dao
 
     public static final double BIRTH_RATE = 10. / 365;
     public static final double DEATH_RATE = 10. / 365;
+    public static int MAX_HOSPITAL;
+
 
     public static final int MIN_RANDOM_CELL = 30;
-
-    public static double LATENCY() {
-        return 2 + DISEASE_CONFIG.getIncubation() + DISEASE_CONFIG.getInfection();
-    }
 
     public static double CONTACT_RATE() {
         return DISEASE_CONFIG.getReproduction() * ((DEATH_RATE + (1. / DISEASE_CONFIG.getIncubation())) / (1.
@@ -37,6 +37,17 @@ public class Configuration {
     public static double CONTACT_RATE_NO_VITAL() {
         return DISEASE_CONFIG.getReproduction() * (1. / DISEASE_CONFIG.getInfection());
     }
+    public static void setDiseaseConfig(DiseaseConfig diseaseConfig) {
+        DISEASE_CONFIG = diseaseConfig;
+    }
+    public static void setMaxHospital(String country){
+        switch (country){
+            case "poland"://https://www.medonet.pl/koronawirus/koronawirus-w-polsce,ile-jest-w-polsce-szpitali-zakaznych--ile-respiratorow-i-miejsc-dla-pacjentow-zakazonych-koronawirusem--sprawdzamy,artykul,41053941.html
+                MAX_HOSPITAL=10000;
+            default:
+                MAX_HOSPITAL=10000;
+        }
+    }
 
     public static double floorOrCeil(double arg) {
         if (arg > 0) {
@@ -46,9 +57,4 @@ public class Configuration {
         } else
             return Math.floor(arg);
     }
-
-    public static void setDiseaseConfig(DiseaseConfig diseaseConfig) {
-        DISEASE_CONFIG = diseaseConfig;
-    }
-
 }
