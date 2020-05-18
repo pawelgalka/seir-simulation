@@ -113,7 +113,7 @@ public class GuiController implements Initializable {
     Button export;
 
     @FXML
-    CheckBox distancing;
+    ComboBox socialDistancingLevelChoice;
 
     private final ObservableList<TableData> simulationData =
             FXCollections.observableArrayList(
@@ -130,6 +130,8 @@ public class GuiController implements Initializable {
                     new TableData("Infectious period", ""),
                     new TableData("Mortality indicator", ""),
                     new TableData("Reproduction index", ""),
+                    new TableData("Reproduction index /w Distancing1",""),
+                    new TableData("Reproduction index /w Distancing2",""),
                     new TableData("Birth Rate", ""),
                     new TableData("Death Rate", ""),
                     new TableData("Moving healthy rate", ""),
@@ -176,14 +178,10 @@ public class GuiController implements Initializable {
                 alert.show();
             }
         });
-        distancing.setOnAction(actionEvent -> {
-            if (distancing.isSelected()){
-                guiContext.setDistancing(true);
-            } else guiContext.setDistancing(false);
-            guiUpdater.updateDiseaseParams();
-        });
+
         addCountryChoiceListener();
         fillDiseaseChoice();
+        fillSocialDistancingChooser();
         loadGraphicalMap();
         guiContext.setTableView(numbers);
         guiContext.setSimulationData(simulationData);
@@ -276,9 +274,9 @@ public class GuiController implements Initializable {
         diseaseInfo.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
         diseaseInfo.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("value"));
         diseaseInfo.setItems(diseaseParamsData);
-        diseaseInfo.setFixedCellSize(diseaseInfo.getPrefHeight() / diseaseParamsData.size() - 10);
+        diseaseInfo.setFixedCellSize(diseaseInfo.getPrefHeight() / diseaseParamsData.size()-5);
         diseaseInfo.minHeightProperty()
-                .bind(Bindings.size(diseaseInfo.getItems()).multiply(diseaseInfo.getFixedCellSize()).add(30));
+                .bind(Bindings.size(diseaseInfo.getItems()).multiply(diseaseInfo.getFixedCellSize()).add(35));
         diseaseChooser.setPromptText("Choose disease");
         diseaseChooser.setItems(FXCollections.observableArrayList("FLU", "AH1N1", "SARS", "COVID19"));
         diseaseChooser.getSelectionModel().selectedItemProperty()
@@ -289,5 +287,14 @@ public class GuiController implements Initializable {
                     guiUpdater.updateDiseaseParams();
                     Configuration.BASE_MORTALITY=Configuration.DISEASE_CONFIG.getMortality();
                 }));
+    }
+
+    private void fillSocialDistancingChooser(){
+        socialDistancingLevelChoice.setPromptText("Social Distancing");
+        socialDistancingLevelChoice.setItems(FXCollections.observableArrayList("NODISTANCING","LEVEL1","LEVEL2"));
+        socialDistancingLevelChoice.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldChoice, newChoice) -> {
+            guiContext.setDistancingLevel(DistancingLevel.valueOf((String) newChoice));
+            guiUpdater.updateDiseaseParams();
+        }));
     }
 }

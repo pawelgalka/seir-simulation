@@ -147,16 +147,18 @@ public class GuiUpdater {
         data.get(1).setValue(String.valueOf(guiContext.getDiseaseConfig().getInfection()));
         data.get(2).setValue(String.valueOf(guiContext.getDiseaseConfig().getMortality()));
         data.get(3).setValue(String.valueOf(guiContext.getDiseaseConfig().getReproduction()));
+        data.get(4).setValue(String.valueOf(guiContext.getDiseaseConfig().getReproductionDistancing1()));
+        data.get(5).setValue(String.valueOf(guiContext.getDiseaseConfig().getReproductionDistancing2()));
         table.refresh();
     }
 
     public void updateCountryInfo() {
         var table = guiContext.getParamsTable();
         var data = table.getItems();
-        data.get(4).setValue(String.valueOf(Configuration.BIRTH_RATE));
-        data.get(5).setValue(String.valueOf(Configuration.DEATH_RATE));
-        data.get(6).setValue(String.valueOf(Configuration.MOVING_PPL_PERC));
-        data.get(7).setValue(String.valueOf(Configuration.MOVING_PPL_SICK));
+        data.get(6).setValue(String.valueOf(Configuration.BIRTH_RATE));
+        data.get(7).setValue(String.valueOf(Configuration.DEATH_RATE));
+        data.get(8).setValue(String.valueOf(Configuration.MOVING_PPL_PERC));
+        data.get(9).setValue(String.valueOf(Configuration.MOVING_PPL_SICK));
         table.refresh();
     }
 
@@ -171,4 +173,5 @@ public class GuiUpdater {
         populationTable.getItems().forEach(row -> row.setValue(""));
 
     }
+
 }
