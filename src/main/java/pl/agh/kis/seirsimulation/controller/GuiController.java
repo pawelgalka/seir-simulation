@@ -115,6 +115,9 @@ public class GuiController implements Initializable {
     @FXML
     ComboBox socialDistancingLevelChoice;
 
+    @FXML
+    CheckBox raportPdf;
+
     private final ObservableList<TableData> simulationData =
             FXCollections.observableArrayList(
                     new TableData("Day", "0"),
@@ -169,13 +172,16 @@ public class GuiController implements Initializable {
 
             try {
                 String file = csvWriter.createCSVFile(guiContext.getHistoryData(),
-                        guiContext.getDiseaseConfig().name());
+                        guiContext.getDiseaseConfig().name(),raportPdf.isSelected());
                 alert.setHeaderText("Export successful");
                 alert.setContentText("Exported to " + file);
             } catch (IOException e) {
                 alert.setAlertType(Alert.AlertType.ERROR);
                 alert.setHeaderText("Export failed");
                 alert.setContentText(e.getMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                alert.setHeaderText("Export failed and/or pdf export error");
             } finally {
                 alert.show();
             }
