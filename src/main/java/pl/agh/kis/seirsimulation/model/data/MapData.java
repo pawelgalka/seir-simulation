@@ -126,6 +126,11 @@ public class MapData {
                         .collect(Collectors.toList()).stream().reduce(0, Integer::sum)).reduce(0, Integer::sum);
     }
 
+    public static int getDeathNum(){
+        return gridMap.stream()
+                .map(cellRow -> cellRow.stream().map(cell -> cell.getD()).collect(Collectors.toList()).stream().mapToInt(Integer::intValue).sum()).mapToInt(Integer::intValue).sum();
+    }
+
     public static void addIllnessToCellTest(Pair<Integer, Integer> index) {
         Cell cell = getCellAtIndex(index);
         cell.getStateCountMap().set(State.I.getState(),

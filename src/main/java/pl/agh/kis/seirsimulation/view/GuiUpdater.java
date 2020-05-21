@@ -24,6 +24,7 @@ import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 import pl.agh.kis.seirsimulation.output.writer.OutputDataDto;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -82,6 +83,7 @@ public class GuiUpdater {
         data.get(2).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.E)));
         data.get(3).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.I)));
         data.get(4).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.R)));
+        data.get(5).setValue(String.valueOf(MapData.getDeathNum()));
         numbers.refresh();
     }
 
@@ -98,7 +100,7 @@ public class GuiUpdater {
     private void updateHistory() {
         guiContext.getHistoryData().add(OutputDataDto.builder().susceptible(MapData.getNumberOfStateSummary(State.S))
                 .exposed(MapData.getNumberOfStateSummary(State.E)).infectious(
-                        MapData.getNumberOfStateSummary(State.I)).recovered(MapData.getNumberOfStateSummary(State.R))
+                        MapData.getNumberOfStateSummary(State.I)).recovered(MapData.getNumberOfStateSummary(State.R)).dead(MapData.getDeathNum())
                 .day(guiContext.getDayOfSim()).build());
     }
 
@@ -109,6 +111,7 @@ public class GuiUpdater {
         lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
         lineChart.getData().get(1).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
         lineChart.getData().get(2).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
+        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getDeathNum()));
     }
 
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface
@@ -129,15 +132,18 @@ public class GuiUpdater {
         XYChart.Series<String, Number> series_E = new XYChart.Series<>();
         XYChart.Series<String, Number> series_I = new XYChart.Series<>();
         XYChart.Series<String, Number> series_R = new XYChart.Series<>();
+        XYChart.Series<String,Number> series_D=new XYChart.Series<>();
 
         series_E.setName("E");
         series_I.setName("I");
         series_R.setName("R");
+        series_D.setName("Death");
 
 //        lineChart.getData().add(series_S);
         lineChart.getData().add(series_E);
         lineChart.getData().add(series_I);
         lineChart.getData().add(series_R);
+        lineChart.getData().add(series_D);
     }
 
     public void updateDiseaseParams() {

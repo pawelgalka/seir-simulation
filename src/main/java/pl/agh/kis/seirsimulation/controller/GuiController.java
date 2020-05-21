@@ -121,7 +121,9 @@ public class GuiController implements Initializable {
                     new TableData("Total population", ""),
                     new TableData("Exposed", "0"),
                     new TableData("Infectious", "0"),
-                    new TableData("Recovered", "0")
+                    new TableData("Recovered", "0"),
+                    new TableData("Deaths","0")
+
             );
 
     private final ObservableList<TableData> diseaseParamsData =

@@ -44,20 +44,4 @@ public class DiseaseProcess {
         }
     }
 
-
-/*    public void makeMoveBack(Pair<Integer, Integer> source) {
-        Cell sourceCell = getCellAtIndex(source);
-        List<Integer> immigrantsFrom;
-        for (var immigrantKey : sourceCell.getImmigrants().keySet()) {
-            immigrantsFrom = sourceCell.getImmigrants().getOrDefault(immigrantKey, Collections.emptyList());
-            List<Integer> neighbourSCM = getCellAtIndex(immigrantKey).getStateCountMap();
-            for (int j = 0; j < sourceCell.getImmigrants().get(immigrantKey).size(); j++) {
-                neighbourSCM.set(j, neighbourSCM.get(j) + immigrantsFrom.get(j));
-            }
-        }
-        sourceCell.getImmigrants().clear();
-
-    }*/
-
-
 }

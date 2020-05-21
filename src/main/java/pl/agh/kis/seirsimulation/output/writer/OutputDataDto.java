@@ -14,5 +14,6 @@ public class OutputDataDto {
     private int exposed;
     private int infectious;
     private int recovered;
+    private int dead;
 
 }

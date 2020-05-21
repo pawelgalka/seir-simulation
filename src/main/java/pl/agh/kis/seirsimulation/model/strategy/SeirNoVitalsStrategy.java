@@ -14,26 +14,26 @@ public class SeirNoVitalsStrategy implements DiseaseStrategy {
 
     @Override
     public int calculateSusceptibleChange(List<Integer> stateCount, double stateCountSum) {
-        return (int) floorOrCeil(
+        return (int) Math.round(
                 ((-CONTACT_RATE_NO_VITAL() * (double) stateCount.get(2) * (double) stateCount.get(0)) / stateCountSum));
     }
 
     @Override
     public int calculateExposedChange(List<Integer> stateCount, double stateCountSum) {
-        return (int) floorOrCeil(
+        return (int) Math.round(
                 (CONTACT_RATE_NO_VITAL() * stateCount.get(2) * stateCount.get(0)) / stateCountSum - ((1 / DISEASE_CONFIG
                         .getIncubation()) * stateCount.get(1)));
     }
 
     @Override
     public int calculateInfectedChange(List<Integer> stateCount) {
-        return (int) floorOrCeil(((1. / DISEASE_CONFIG.getIncubation()) * stateCount.get(1)) - (((1. / DISEASE_CONFIG
+        return (int) Math.round(((1. / DISEASE_CONFIG.getIncubation()) * stateCount.get(1)) - (((1. / DISEASE_CONFIG
                 .getInfection())) * stateCount.get(2)));
     }
 
     @Override
     public int calculateRecoveredChange(List<Integer> stateCount) {
-        return (int) floorOrCeil((1. / DISEASE_CONFIG.getInfection()) * stateCount.get(2));
+        return (int) Math.round((1. / DISEASE_CONFIG.getInfection()) * stateCount.get(2));
     }
 
     @Override

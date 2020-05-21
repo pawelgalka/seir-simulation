@@ -15,7 +15,7 @@ import static java.time.LocalDate.now;
 @Component
 public class CSVWriter {
     private static final String[] HEADERS = new String[] { "Date", "Susceptible", "Exposed", "Infectious",
-            "Recovered" };
+            "Recovered","Dead" };
     private int counter = 0;
 
     public String createCSVFile(List<OutputDataDto> history, String diseaseName)
@@ -34,7 +34,7 @@ public class CSVWriter {
         return dataEntry -> {
             try {
                 printer.printRecord(dataEntry.getDay(),dataEntry.getSusceptible(), dataEntry.getExposed(), dataEntry.getInfectious(),
-                        dataEntry.getRecovered());
+                        dataEntry.getRecovered(),dataEntry.getDead());
             } catch (IOException ignored) {
             }
         };
