@@ -6,27 +6,27 @@ import java.util.List;
 
 public class SarsCov2Strategy implements DiseaseStrategy {
     @Override
-    public int calculateSusceptibleChange(List<Integer> stateCount, double stateCountSum) {
+    public int calculateSusceptibleChange(List<Integer> stateCount, double stateCountSum, boolean lessThanHundredInfected) {
         return 0;
     }
 
     @Override
-    public int calculateExposedChange(List<Integer> stateCount, double stateCountSum) {
+    public int calculateExposedChange(List<Integer> stateCount, double stateCountSum, boolean lessThanHundredInfected) {
         return 0;
     }
 
     @Override
-    public int calculateInfectedChange(List<Integer> stateCount) {
+    public int calculateInfectedChange(List<Integer> stateCount, boolean lessThanHundredInfected) {
         return 0;
     }
 
     @Override
-    public int calculateRecoveredChange(List<Integer> stateCount) {
+    public int calculateRecoveredChange(List<Integer> stateCount, boolean lessThanHundredInfected) {
         return 0;
     }
 
     @Override
-    public int calculateDiseaseDeaths(List<Integer> stateCount) {
+    public int calculateDiseaseDeaths(List<Integer> stateCount, boolean lessThanHundredInfected) {
         return 0;
     }
 

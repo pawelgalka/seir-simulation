@@ -8,35 +8,35 @@ import java.util.List;
 import java.util.Map;
 
 import static pl.agh.kis.seirsimulation.model.configuration.Configuration.*;
-import static pl.agh.kis.seirsimulation.model.data.ChangesValidator.randomlyValidateDailyChanges;
+import static pl.agh.kis.seirsimulation.model.data.DataValidator.randomlyValidateDailyChanges;
 
 public class SeirStrategy implements DiseaseStrategy {
 
     @Override
-    public int calculateSusceptibleChange(List<Integer> stateCount, double stateCountSum) {
+    public int calculateSusceptibleChange(List<Integer> stateCount, double stateCountSum,boolean lessThanHundredInfected) {
         return (int) floorOrCeil((BIRTH_RATE*stateCountSum)-(DEATH_RATE*stateCount.get(0))-((CONTACT_RATE()*stateCount.get(2)*stateCount.get(0))/stateCountSum));
     }
 
     @Override
-    public int calculateExposedChange(List<Integer> stateCount, double stateCountSum) {
+    public int calculateExposedChange(List<Integer> stateCount, double stateCountSum,boolean lessThanHundredInfected) {
         return (int) floorOrCeil((CONTACT_RATE()*stateCount.get(2)*stateCount.get(0))/stateCountSum - (DEATH_RATE+1/DISEASE_CONFIG
                 .getIncubation())*stateCount.get(1));
     }
 
     @Override
-    public int calculateInfectedChange(List<Integer> stateCount) {
+    public int calculateInfectedChange(List<Integer> stateCount,boolean lessThanHundredInfected) {
         return (int) floorOrCeil(((1/ DISEASE_CONFIG.getIncubation())*stateCount.get(1))-(((1/ DISEASE_CONFIG
                 .getInfection())+DEATH_RATE)*stateCount.get(2)));
     }
 
     @Override
-    public int calculateRecoveredChange(List<Integer> stateCount) {
+    public int calculateRecoveredChange(List<Integer> stateCount,boolean lessThanHundredInfected) {
         return (int) floorOrCeil((1/DISEASE_CONFIG.getInfection())*stateCount.get(2)-(DEATH_RATE*stateCount.get(3)));
     }
 
     @Override
-    public int calculateDiseaseDeaths(List<Integer> stateCount) {
-        return (int) floorOrCeil(calculateRecoveredChange(stateCount)*DISEASE_CONFIG.getMortality());
+    public int calculateDiseaseDeaths(List<Integer> stateCount,boolean lessThanHundredInfected) {
+        return (int) floorOrCeil(calculateRecoveredChange(stateCount,lessThanHundredInfected)*DISEASE_CONFIG.getMortality());
     }
 
     @Override
@@ -49,8 +49,9 @@ public class SeirStrategy implements DiseaseStrategy {
                 stateCount.set(j,stateCount.get(j)+immigrantsFrom.get(j));
             }
         }
+        boolean lessThanHundredInfected=stateCount.get(2)<100;
         var stateCountSum = (double) stateCount.stream().mapToInt(Integer::intValue).sum();
-        return randomlyValidateDailyChanges(new int[]{calculateSusceptibleChange(stateCount,stateCountSum),calculateExposedChange(stateCount,stateCountSum),calculateInfectedChange(stateCount),calculateRecoveredChange(stateCount),calculateDiseaseDeaths(stateCount)});
+        return randomlyValidateDailyChanges(new int[]{calculateSusceptibleChange(stateCount,stateCountSum,lessThanHundredInfected),calculateExposedChange(stateCount,stateCountSum,lessThanHundredInfected),calculateInfectedChange(stateCount,lessThanHundredInfected),calculateRecoveredChange(stateCount,lessThanHundredInfected)-calculateDiseaseDeaths(stateCount,lessThanHundredInfected),calculateDiseaseDeaths(stateCount,lessThanHundredInfected)});
     }
 }
 

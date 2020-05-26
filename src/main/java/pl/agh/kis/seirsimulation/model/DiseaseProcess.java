@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.agh.kis.seirsimulation.model.data.DataValidator;
 import pl.agh.kis.seirsimulation.model.strategy.DiseaseStrategy;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.lang.Math.round;
+import static pl.agh.kis.seirsimulation.model.data.DataValidator.validateAppliedChanges;
 
 @Slf4j
 @Component
@@ -39,9 +41,7 @@ public class DiseaseProcess {
         }
         cell.setImmigrants(immigrants);
         cell.setD(cell.getD() + changes[changes.length-1]);
-        for (int j = 0; j < cell.getStateCountMap().size(); j++) {
-            cell.getStateCountMap().set(j, cell.getStateCountMap().get(j) + (changes[j] -immigrantChangesSum.get(j)));
-        }
+        cell.setStateCountMap(validateAppliedChanges(changes,cell.getStateCountMap(),immigrantChangesSum));
     }
 
 }
