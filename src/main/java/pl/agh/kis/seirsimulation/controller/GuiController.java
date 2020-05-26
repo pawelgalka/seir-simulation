@@ -301,7 +301,8 @@ public class GuiController implements Initializable {
         socialDistancingLevelChoice.setPromptText("Social Distancing");
         socialDistancingLevelChoice.setItems(FXCollections.observableArrayList("NODISTANCING","LEVEL1","LEVEL2"));
         socialDistancingLevelChoice.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldChoice, newChoice) -> {
-            guiContext.setDistancingLevel(DistancingLevel.valueOf((String) newChoice));
+            guiContext.setDistancingLevelChange(DistancingLevel.valueOf((String) newChoice));
+            log.debug("CLICKED");
             guiUpdater.updateDiseaseParams();
         }));
     }

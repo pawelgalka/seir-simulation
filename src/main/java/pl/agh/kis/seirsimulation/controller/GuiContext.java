@@ -37,7 +37,8 @@ public class GuiContext {
     private DiseaseConfig diseaseConfig;
     private TableView<TableData> paramsTable;
     private List<OutputDataDto> historyData = new ArrayList<>();
-    private DistancingLevel distancingLevel =DistancingLevel.NODISTANCING;
+    private DistancingLevel distancingLevel = DistancingLevel.NODISTANCING;
+    private DistancingLevel distancingLevelChange = null;
 
     public void dayStep(){
         dayOfSim++;

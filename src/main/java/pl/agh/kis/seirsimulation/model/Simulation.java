@@ -37,6 +37,12 @@ public class Simulation {
                 movementProcess.makeMoveBack(cell);
             }
         }
+        if (context.getDistancingLevelChange() != null) {
+            context.setDistancingLevel(context.getDistancingLevelChange());
+            context.setDistancingLevelChange(null);
+            log.debug("CHANGED");
+        }
+
     }
 
     public void updateMortality() {
