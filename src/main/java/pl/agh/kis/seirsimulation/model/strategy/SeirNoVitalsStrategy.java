@@ -71,7 +71,7 @@ public class SeirNoVitalsStrategy implements DiseaseStrategy {
                 stateCount.set(j,stateCount.get(j)+immigrantsFrom.get(j));
             }
         }
-        boolean lessThanHundredInfected=stateCount.get(2)<100;
+        boolean lessThanHundredInfected=false;
         var stateCountSum = (double) stateCount.stream().mapToInt(Integer::intValue).sum();
         return randomlyValidateDailyChanges(new int[] { calculateSusceptibleChange(stateCount, stateCountSum,lessThanHundredInfected),
                 calculateExposedChange(stateCount, stateCountSum,lessThanHundredInfected), calculateInfectedChange(stateCount,lessThanHundredInfected),
