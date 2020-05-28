@@ -30,11 +30,7 @@ public class Simulation {
         movementProcess.makeMove();
         for (var row : MapData.getGridMap()){
             for (var cell : row) {
-                if (cell.getImmigrants().containsKey(new Pair<>(10, 10))) {
-                    diseaseProcess.simulateDayAtSingleCellLog(cell);
-                } else {
-                    diseaseProcess.simulateDayAtSingleCell(cell);
-                }
+                diseaseProcess.simulateDayAtSingleCell(cell);
             }
         }
         for (var row : MapData.getGridMap()){
