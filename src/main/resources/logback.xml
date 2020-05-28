@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
     <property name="HOME_LOG" value="logs/app.log"/>
 
     <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -8,12 +16,8 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/archived/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <!-- each archived file, size max 10MB -->
-            <maxFileSize>100MB</maxFileSize>
-            <!-- total size of all archive files, if total size > 20GB,
-				it will delete old archived file -->
+            <maxFileSize>200MB</maxFileSize>
             <totalSizeCap>20GB</totalSizeCap>
-            <!-- 60 days to keep -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>
 
@@ -24,6 +28,7 @@
 
     <logger name="pl.agh" level="debug" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="CONSOLE"/>
     </logger>
 
     <root level="error">
