@@ -127,6 +127,11 @@ public class MapData {
         cell.getStateCountMap().set(State.I.getState(), cell.getStateCountMap().get(State.I.getState()) + 50);
         cell.getStateCountMap().set(State.S.getState(), cell.getStateCountMap().get(State.S.getState()) - 50);
     }
+    public static void addExposedToCell(Pair<Integer, Integer> index) {
+        Cell cell = getCellAtIndex(index);
+        cell.getStateCountMap().set(State.E.getState(), cell.getStateCountMap().get(State.I.getState()) + 20);
+        cell.getStateCountMap().set(State.S.getState(), cell.getStateCountMap().get(State.S.getState()) - 20);
+    }
 
     public static int getNumberOfStateSummary(State state) {
         return gridMap.stream()

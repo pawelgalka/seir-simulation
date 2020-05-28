@@ -68,13 +68,26 @@ public class GuiUpdater {
 
     public void reloadLabelAtIndex(Pair<Integer, Integer> value1, State state,
             Cell cellAtIndex, GridPane grid) {
-        int max = MapData.getMaxStateLevel(state);
         ((Label) Objects.requireNonNull(GuiUtils.getNodeFromGridPane(grid, value1.getValue1(), value1.getValue0())))
-                .setBackground(new Background(new BackgroundFill(new Color(
-                        1, 0, 0,
-                        Math.max(0, (double) cellAtIndex.getStateCountMap().get(state.getState()) / max)),
+                .setBackground(new Background(new BackgroundFill(getCellLabel(cellAtIndex.getStateCountMap().get(state.getState())),
                         CornerRadii.EMPTY,
                         Insets.EMPTY)));
+    }
+
+    public Color getCellLabel(int stateNum){
+        if(stateNum==0){
+            return new Color(
+                    1, 0, 0,
+                    0);
+        }else if (stateNum>0&&stateNum<=10){
+            return Color.rgb(41,242,81,0.6);
+        }else if (stateNum>10&&stateNum<=100){
+            return Color.rgb(215,247,7,0.6);
+        }else if (stateNum>100&&stateNum<=1000){
+            return Color.rgb(247,191,7,0.6);
+        }else if (stateNum>1000&&stateNum<=10000){
+            return Color.rgb(247,119,7,0.6);
+        }else return Color.rgb(247,7,7,0.6);
     }
 
     public void updateDataTable() {
