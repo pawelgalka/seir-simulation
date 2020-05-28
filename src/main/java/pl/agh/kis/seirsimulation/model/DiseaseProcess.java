@@ -4,13 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.data.DataValidator;
 import pl.agh.kis.seirsimulation.model.strategy.DiseaseStrategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Math.round;
 import static pl.agh.kis.seirsimulation.model.data.DataValidator.validateAppliedChanges;
@@ -20,11 +18,15 @@ import static pl.agh.kis.seirsimulation.model.data.DataValidator.validateApplied
 public class DiseaseProcess {
 
     @Autowired
+    GuiContext context;
+
+    @Autowired
     DiseaseStrategy diseaseStrategy;
 
     public void simulateDayAtSingleCell(Cell cell) {
         int[] changes = diseaseStrategy
                 .getDailyChanges(cell);
+        context.setNotChanging(context.isNotChanging() && Arrays.stream(changes).allMatch(change -> change == 0));
         Map<Pair<Integer, Integer>, List<Integer>> immigrants = cell.getImmigrants();
         List<Integer> immigrantChangesSum = new ArrayList<>(Collections.nCopies(4, 0));
         var cellPeopleSum = cell.getStateCountMap().stream().mapToInt(Integer::intValue).sum();

@@ -147,7 +147,6 @@ public class GuiController implements Initializable {
         step.setDisable(true);
         run.setOnMouseClicked(mouseEvent -> {
             step.setDisable(true);
-            guiContext.setSimRunning(true);
             guiUpdater.run();
         });
         pause.setOnMouseClicked(mouseEvent -> {
@@ -304,5 +303,12 @@ public class GuiController implements Initializable {
                     log.debug("CLICKED");
                     guiUpdater.updateDiseaseParams();
                 }));
+    }
+
+    public void message(){
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setContentText("ELO KONIEC");
+        a.showAndWait();
+
     }
 }
