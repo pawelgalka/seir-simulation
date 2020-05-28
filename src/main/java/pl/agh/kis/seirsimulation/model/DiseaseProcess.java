@@ -10,8 +10,6 @@ import pl.agh.kis.seirsimulation.model.strategy.DiseaseStrategy;
 
 import java.util.*;
 
-import static java.lang.Math.floor;
-import static java.lang.Math.round;
 import static pl.agh.kis.seirsimulation.model.configuration.Configuration.ceilOrFloor;
 import static pl.agh.kis.seirsimulation.model.data.DataValidator.validateAppliedChanges;
 
