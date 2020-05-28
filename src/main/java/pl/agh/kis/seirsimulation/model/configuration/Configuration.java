@@ -57,4 +57,12 @@ public class Configuration {
         } else
             return Math.floor(arg);
     }
+    public static double ceilOrFloor(double arg) {
+        if (arg > 0) {
+            return Math.floor(arg);
+        } else if (arg == 0) {
+            return 0;
+        } else
+            return Math.ceil(arg);
+    }
 }

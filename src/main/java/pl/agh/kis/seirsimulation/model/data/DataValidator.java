@@ -29,6 +29,11 @@ public class DataValidator {
     public static List<Integer> validateAppliedChanges(int[]changes,List<Integer>scm,List<Integer> immigrantChangesSum){
         List<Integer> newScm= new ArrayList<>(Collections.nCopies(4,0));
         for(int i=0;i<scm.size();i++){
+            if(scm.get(i)+(changes[i]-immigrantChangesSum.get(i))<0){
+                changes[0]=changes[0]+(changes[i]-immigrantChangesSum.get(i));
+            }
+        }
+        for(int i=0;i<scm.size();i++){
             newScm.set(i,Math.max(0,scm.get(i)+(changes[i] -immigrantChangesSum.get(i))));
         }
 /*        if(scm.get(0)!=newScm.get(0)&&scm.get(1)==newScm.get(1)&&scm.get(2)==newScm.get(2)&&scm.get(3)!=newScm.get(3)){
