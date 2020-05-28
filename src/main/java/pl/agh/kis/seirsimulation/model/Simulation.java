@@ -3,6 +3,7 @@ package pl.agh.kis.seirsimulation.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.data.MapData;
@@ -29,8 +30,12 @@ public class Simulation {
         context.dayStep();
         movementProcess.makeMove();
         for (var row : MapData.getGridMap()){
-            for (var cell : row){
-                diseaseProcess.simulateDayAtSingleCell(cell);
+            for (var cell : row) {
+                if (cell.getImmigrants().containsKey(new Pair<>(10, 10))) {
+                    diseaseProcess.simulateDayAtSingleCellLog(cell);
+                } else {
+                    diseaseProcess.simulateDayAtSingleCell(cell);
+                }
             }
         }
         for (var row : MapData.getGridMap()){
