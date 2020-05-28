@@ -39,7 +39,7 @@ public class GuiContext {
     private List<OutputDataDto> historyData = new ArrayList<>();
     private DistancingLevel distancingLevel = DistancingLevel.NODISTANCING;
     private DistancingLevel distancingLevelChange = null;
-
+    private boolean isNotChanging = true;
     public void dayStep(){
         dayOfSim++;
     }

@@ -17,6 +17,7 @@ import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
+import pl.agh.kis.seirsimulation.controller.GuiController;
 import pl.agh.kis.seirsimulation.model.Cell;
 import pl.agh.kis.seirsimulation.model.Simulation;
 import pl.agh.kis.seirsimulation.model.State;
@@ -24,7 +25,6 @@ import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 import pl.agh.kis.seirsimulation.output.writer.OutputDataDto;
 
-import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -35,18 +35,22 @@ public class GuiUpdater {
 
     @Autowired Simulation simulation;
 
+    @Autowired GuiController guiController;
+
     private Thread thread;
 
     public void run() {
+        guiContext.setSimRunning(true);
         thread = new Thread(() -> {
             Runnable updater = this::updateTest;
 
             while (guiContext.isSimRunning()) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ignored) {
-                }
                 Platform.runLater(updater);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error(e.getMessage());
+                }
             }
         });
         thread.setDaemon(true);
@@ -95,22 +99,32 @@ public class GuiUpdater {
         updateHistory();
         updateDataTable();
         updateChartData();
+        if (guiContext.isNotChanging()){
+            guiContext.setSimRunning(false);
+            log.debug("NONE CHANGES");
+            guiController.message();
+        }
+        //TODO: sim ended no changes handle to 0 E,I
     }
 
     private void updateHistory() {
         guiContext.getHistoryData().add(OutputDataDto.builder().susceptible(MapData.getNumberOfStateSummary(State.S))
                 .exposed(MapData.getNumberOfStateSummary(State.E)).infectious(
-                        MapData.getNumberOfStateSummary(State.I)).recovered(MapData.getNumberOfStateSummary(State.R)).dead(MapData.getDeathNum())
+                        MapData.getNumberOfStateSummary(State.I)).recovered(MapData.getNumberOfStateSummary(State.R))
+                .dead(MapData.getDeathNum())
                 .day(guiContext.getDayOfSim()).build());
     }
 
     private void updateChartData() {
         final LineChart<String, Number> lineChart = guiContext.getChartData();
         var seriesCategory = String.valueOf(guiContext.getDayOfSim());
-//        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
-        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
-        lineChart.getData().get(1).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
-        lineChart.getData().get(2).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
+        //        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
+        lineChart.getData().get(0).getData()
+                .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
+        lineChart.getData().get(1).getData()
+                .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
+        lineChart.getData().get(2).getData()
+                .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
         lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getDeathNum()));
     }
 
@@ -132,14 +146,14 @@ public class GuiUpdater {
         XYChart.Series<String, Number> series_E = new XYChart.Series<>();
         XYChart.Series<String, Number> series_I = new XYChart.Series<>();
         XYChart.Series<String, Number> series_R = new XYChart.Series<>();
-        XYChart.Series<String,Number> series_D=new XYChart.Series<>();
+        XYChart.Series<String, Number> series_D = new XYChart.Series<>();
 
         series_E.setName("E");
         series_I.setName("I");
         series_R.setName("R");
         series_D.setName("Death");
 
-//        lineChart.getData().add(series_S);
+        //        lineChart.getData().add(series_S);
         lineChart.getData().add(series_E);
         lineChart.getData().add(series_I);
         lineChart.getData().add(series_R);

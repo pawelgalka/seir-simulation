@@ -26,6 +26,7 @@ public class Simulation {
 
     public void step() {
         log.debug("stepping");
+        context.setNotChanging(true);
         context.dayStep();
         movementProcess.makeMove();
         for (var row : MapData.getGridMap()){
