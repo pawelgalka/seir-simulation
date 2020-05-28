@@ -68,11 +68,12 @@ public class DataLoader {
                 for (var k = y * i; k < (i + 1) * y && k < linesParsed.size(); k++) {
                     for (var l = x * j; l < (j + 1) * x && l < linesParsed.get(0).size(); l++) {
                         sum += linesParsed.get(k).get(l);
-                        if(sum > Configuration.MIN_RANDOM_CELL){
-                            MapData.addRandomIndex(new Pair<>(i, j));
-                        }
+
                         max = Math.max(sum, max);
                     }
+                }
+                if(sum > Configuration.MIN_RANDOM_CELL){
+                    MapData.addRandomIndex(new Pair<>(i,j));
                 }
                 cells.get(i).add(new Cell(sum));
             }

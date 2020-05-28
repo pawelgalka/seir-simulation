@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Setter
 public class MapData {
     static List<List<Cell>> gridMap;
-    static List<Pair<Integer, Integer>> cellsForRandomIllness = new ArrayList<>();
+    static public List<Pair<Integer, Integer>> cellsForRandomIllness = new ArrayList<>();
 
     public static Integer getMaxValue() {
         return maxValue;
@@ -55,51 +55,59 @@ public class MapData {
         return cellsForRandomIllness.size();
     }
 
-    public static List<Pair<Integer,Integer>> getNeighboursOfCell(Pair<Integer, Integer> indexOfCell /*x,y*/) {
+    public static List<Pair<Integer, Integer>> getNeighboursOfCell(Pair<Integer, Integer> indexOfCell /*x,y*/) {
         boolean possibleUp = false, possibleDown = false, possibleLeft = false, possibleRight = false;
-        List<Pair<Integer,Integer>> neighbours = new ArrayList<>();
+        List<Pair<Integer, Integer>> neighbours = new ArrayList<>();
         if (indexOfCell.getValue1() /*y*/ >= 1) {
             possibleUp = true;
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0(),indexOfCell.getValue1() - 1)).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0(), indexOfCell.getValue1() - 1))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0(), indexOfCell.getValue1() - 1));
             }
         }
         if (indexOfCell.getValue1() < gridMap.size() - 1) {
             possibleDown = true;
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0(),indexOfCell.getValue1() + 1)).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0(), indexOfCell.getValue1() + 1))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0(), indexOfCell.getValue1() + 1));
             }
         }
         if (indexOfCell.getValue0() /*x*/ >= 1) {
             possibleLeft = true;
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0()-1,indexOfCell.getValue1())).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0() - 1, indexOfCell.getValue1()))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0() - 1, indexOfCell.getValue1()));
             }
         }
         if (indexOfCell.getValue0() < gridMap.get(0).size() - 1) {
             possibleRight = true;
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0()+1,indexOfCell.getValue1())).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0() + 1, indexOfCell.getValue1()))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0() + 1, indexOfCell.getValue1()));
             }
         }
 
         if (possibleUp && possibleLeft) {
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0()-1,indexOfCell.getValue1() - 1)).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0() - 1, indexOfCell.getValue1() - 1))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0() - 1, indexOfCell.getValue1() - 1));
             }
         }
         if (possibleUp && possibleRight) {
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0()+1,indexOfCell.getValue1() - 1)).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0() + 1, indexOfCell.getValue1() - 1))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0() + 1, indexOfCell.getValue1() - 1));
             }
         }
         if (possibleDown && possibleLeft) {
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0()-1,indexOfCell.getValue1() + 1)).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0() - 1, indexOfCell.getValue1() + 1))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0() - 1, indexOfCell.getValue1() + 1));
             }
         }
         if (possibleDown && possibleRight) {
-            if(MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0()+1,indexOfCell.getValue1() + 1)).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>0) {
+            if (MapData.getCellAtIndex(new Pair<>(indexOfCell.getValue0() + 1, indexOfCell.getValue1() + 1))
+                    .getStateCountMap().stream().mapToInt(Integer::intValue).sum() > 0) {
                 neighbours.add(new Pair<>(indexOfCell.getValue0() + 1, indexOfCell.getValue1() + 1));
             }
         }
@@ -126,15 +134,17 @@ public class MapData {
                         .collect(Collectors.toList()).stream().reduce(0, Integer::sum)).reduce(0, Integer::sum);
     }
 
-    public static int getDeathNum(){
+    public static int getDeathNum() {
         return gridMap.stream()
-                .map(cellRow -> cellRow.stream().map(cell -> cell.getD()).collect(Collectors.toList()).stream().mapToInt(Integer::intValue).sum()).mapToInt(Integer::intValue).sum();
+                .map(cellRow -> cellRow.stream().map(Cell::getD).collect(Collectors.toList()).stream()
+                        .mapToInt(Integer::intValue).sum()).mapToInt(Integer::intValue).sum();
     }
 
     public static void addIllnessToCellTest(Pair<Integer, Integer> index) {
         Cell cell = getCellAtIndex(index);
         cell.getStateCountMap().set(State.I.getState(),
-                (int) ((cell.getStateCountMap().get(State.I.getState()) + 10000)*5));
-        cell.getStateCountMap().set(State.S.getState(), cell.getStateCountMap().get(State.S.getState()) - cell.getStateCountMap().get(State.I.getState()));
+                (int) ((cell.getStateCountMap().get(State.I.getState()) + 10000) * 5));
+        cell.getStateCountMap().set(State.S.getState(),
+                cell.getStateCountMap().get(State.S.getState()) - cell.getStateCountMap().get(State.I.getState()));
     }
 }

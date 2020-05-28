@@ -26,7 +26,7 @@ public class Configuration {
     public static int MAX_HOSPITAL;
 
 
-    public static final int MIN_RANDOM_CELL = 30;
+    public static final int MIN_RANDOM_CELL = 100;
 
     public static double CONTACT_RATE() {
         return DISEASE_CONFIG.getReproduction() * ((DEATH_RATE + (1. / DISEASE_CONFIG.getIncubation())) / (1.

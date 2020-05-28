@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -12,8 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,7 @@ import pl.agh.kis.seirsimulation.view.GuiUtils;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -125,7 +123,7 @@ public class GuiController implements Initializable {
                     new TableData("Exposed", "0"),
                     new TableData("Infectious", "0"),
                     new TableData("Recovered", "0"),
-                    new TableData("Deaths","0")
+                    new TableData("Deaths", "0")
 
             );
 
@@ -135,8 +133,8 @@ public class GuiController implements Initializable {
                     new TableData("Infectious period", ""),
                     new TableData("Mortality indicator", ""),
                     new TableData("Reproduction index", ""),
-                    new TableData("Reproduction index /w Distancing1",""),
-                    new TableData("Reproduction index /w Distancing2",""),
+                    new TableData("Reproduction index /w Distancing1", ""),
+                    new TableData("Reproduction index /w Distancing2", ""),
                     new TableData("Birth Rate", ""),
                     new TableData("Death Rate", ""),
                     new TableData("Moving healthy rate", ""),
@@ -172,7 +170,7 @@ public class GuiController implements Initializable {
 
             try {
                 String file = csvWriter.createCSVFile(guiContext.getHistoryData(),
-                        guiContext.getDiseaseConfig().name(),raportPdf.isSelected());
+                        guiContext.getDiseaseConfig().name(), raportPdf.isSelected());
                 alert.setHeaderText("Export successful");
                 alert.setContentText("Exported to " + file);
             } catch (IOException e) {
@@ -217,7 +215,7 @@ public class GuiController implements Initializable {
             int S = MapData.getCellAtIndex(pair.getValue1()).getStateCountMap().get(0);
             S -= pair.getValue0();
             MapData.getCellAtIndex(pair.getValue1()).getStateCountMap().set(0, S);
-            MapData.getCellAtIndex(pair.getValue1()).getStateCountMap().set(1, pair.getValue0());
+            MapData.getCellAtIndex(pair.getValue1()).getStateCountMap().set(2, pair.getValue0());
             guiUpdater.reloadLabelAtIndex(pair.getValue1(), State.S, MapData.getCellAtIndex(pair.getValue1()), grid);
         });
     }
@@ -282,7 +280,7 @@ public class GuiController implements Initializable {
         diseaseInfo.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
         diseaseInfo.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("value"));
         diseaseInfo.setItems(diseaseParamsData);
-        diseaseInfo.setFixedCellSize(diseaseInfo.getPrefHeight() / diseaseParamsData.size()-5);
+        diseaseInfo.setFixedCellSize(diseaseInfo.getPrefHeight() / diseaseParamsData.size() - 5);
         diseaseInfo.minHeightProperty()
                 .bind(Bindings.size(diseaseInfo.getItems()).multiply(diseaseInfo.getFixedCellSize()).add(35));
         diseaseChooser.setPromptText("Choose disease");
@@ -293,17 +291,18 @@ public class GuiController implements Initializable {
                             DiseaseConfig.valueOf(newChoice));
                     Configuration.setDiseaseConfig(DiseaseConfig.valueOf(newChoice));
                     guiUpdater.updateDiseaseParams();
-                    Configuration.BASE_MORTALITY=Configuration.DISEASE_CONFIG.getMortality();
+                    Configuration.BASE_MORTALITY = Configuration.DISEASE_CONFIG.getMortality();
                 }));
     }
 
-    private void fillSocialDistancingChooser(){
+    private void fillSocialDistancingChooser() {
         socialDistancingLevelChoice.setPromptText("Social Distancing");
-        socialDistancingLevelChoice.setItems(FXCollections.observableArrayList("NODISTANCING","LEVEL1","LEVEL2"));
-        socialDistancingLevelChoice.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldChoice, newChoice) -> {
-            guiContext.setDistancingLevelChange(DistancingLevel.valueOf((String) newChoice));
-            log.debug("CLICKED");
-            guiUpdater.updateDiseaseParams();
-        }));
+        socialDistancingLevelChoice.setItems(FXCollections.observableArrayList("NODISTANCING", "LEVEL1", "LEVEL2"));
+        socialDistancingLevelChoice.getSelectionModel().selectedItemProperty()
+                .addListener(((observableValue, oldChoice, newChoice) -> {
+                    guiContext.setDistancingLevelChange(DistancingLevel.valueOf((String) newChoice));
+                    log.debug("CLICKED");
+                    guiUpdater.updateDiseaseParams();
+                }));
     }
 }

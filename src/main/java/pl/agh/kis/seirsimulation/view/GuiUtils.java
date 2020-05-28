@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j public
 class GuiUtils {
 
-    static Node getNodeFromGridPane(GridPane gridPane, int col, int row) {
+    public static Node getNodeFromGridPane(GridPane gridPane, int col, int row) {
         for (Node node : gridPane.getChildren()) {
 
             if (GridPane.getColumnIndex(node) != null
