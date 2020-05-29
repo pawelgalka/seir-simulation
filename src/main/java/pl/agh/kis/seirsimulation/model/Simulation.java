@@ -3,7 +3,6 @@ package pl.agh.kis.seirsimulation.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.data.MapData;
@@ -31,11 +30,7 @@ public class Simulation {
         movementProcess.makeMove();
         for (var row : MapData.getGridMap()){
             for (var cell : row) {
-                if (cell.getImmigrants().containsKey(new Pair<>(10, 10))) {
-                    diseaseProcess.simulateDayAtSingleCellLog(cell);
-                } else {
-                    diseaseProcess.simulateDayAtSingleCell(cell);
-                }
+                diseaseProcess.simulateDayAtSingleCell(cell);
             }
         }
         for (var row : MapData.getGridMap()){
@@ -53,8 +48,7 @@ public class Simulation {
 
     public void updateMortality() {
         if(MapData.getNumberOfStateSummary(State.I)*HOSPITALIZATION_PERC>MAX_HOSPITAL){
-            DISEASE_CONFIG.setMortality(BASE_MORTALITY*2);
-            // TODO: 13.05.2020 implement better formula
+            DISEASE_CONFIG.setMortality(BASE_MORTALITY+(MapData.getNumberOfStateSummary(State.I)*HOSPITALIZATION_PERC/1000000));
         }
         else if(MapData.getNumberOfStateSummary(State.I)*HOSPITALIZATION_PERC<=MAX_HOSPITAL){
             DISEASE_CONFIG.setMortality(BASE_MORTALITY);
