@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -14,8 +13,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +31,15 @@ import pl.agh.kis.seirsimulation.view.GuiUtils;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Optional.ofNullable;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.MIN_RANDOM_CELL;
 
 @Slf4j
 @Component
@@ -200,7 +203,7 @@ public class GuiController implements Initializable {
     }
 
     private void distributeRandomIll() {
-        int split = Math.floorDiv(500, Configuration.MIN_RANDOM_CELL);
+        int split = Math.floorDiv(500, MIN_RANDOM_CELL);
         List<Integer> splitPoints =
                 IntStream.rangeClosed(1, 500)
                         .boxed().collect(Collectors.toList());
@@ -244,7 +247,6 @@ public class GuiController implements Initializable {
             log.debug(String.valueOf(Bindings.size(numbers.getItems()).multiply(numbers.getFixedCellSize()).add(30)));
         }, () -> log.error("Could not load map")));
     }
-
     private void loadGrid() {
         guiContext.setDayOfSim(0);
         grid.setGridLinesVisible(true);
@@ -260,6 +262,11 @@ public class GuiController implements Initializable {
                 grid.getChildren().add(label);
                 guiUpdater.updateDataTable();
                 guiUpdater.updateCountryInfo();
+/*                if(MapData.getCellAtIndex(new Pair<>(label.row,label.col)).getStateCountMap().stream().mapToInt(Integer::intValue).sum()>MIN_RANDOM_CELL){
+                    label.setBackground(new Background(new BackgroundFill(Color.rgb(247,7,7,0.6),
+                            CornerRadii.EMPTY,
+                            Insets.EMPTY)));
+                }*/
                 label.setOnMouseClicked(mouseEvent -> {
                     if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                         MapData.addIllnessToCell(new Pair<>(label.getCol(), label.getRow()));
@@ -316,7 +323,7 @@ public class GuiController implements Initializable {
 
     public void message(){
         Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setContentText("ELO KONIEC");
+        a.setContentText("Simulation Finished");
         a.showAndWait();
 
     }
