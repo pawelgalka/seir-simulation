@@ -15,7 +15,7 @@ public enum DiseaseConfig {
     FLU(2.,6.,0.001,1.3,0.625,0.3125),
     AH1N1(2.,6.,0.0002,1.5,0.75,0.375 ),
     SARS(5.,14.,0.095,3.,1.5,0.75),
-    COVID19(6.,16.,0.034,2.5,1.25,0.625);
+    COVID19(6.,16.,0.03,2.5,1.25,0.625);
 
     @Component
     public static class GuiContextInjector {

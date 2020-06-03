@@ -10,7 +10,7 @@ public class Configuration {
 
     //Model Config
     public static final StrategyEnum DISEASE_STRATEGY = StrategyEnum.NO_VITAL_SEIR;
-    public static final double MOVING_PPL_PERC = 0.15;
+    public static final double MOVING_PPL_PERC = 0.25;
     public static final double MOVING_PPL_SICK = 0.1;
 
     //Virus Config

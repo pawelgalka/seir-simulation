@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
@@ -147,6 +148,7 @@ public class GuiController implements Initializable {
         step.setDisable(true);
         run.setOnMouseClicked(mouseEvent -> {
             step.setDisable(true);
+            simulation.step();
             guiUpdater.run();
         });
         pause.setOnMouseClicked(mouseEvent -> {
@@ -259,9 +261,16 @@ public class GuiController implements Initializable {
                 guiUpdater.updateDataTable();
                 guiUpdater.updateCountryInfo();
                 label.setOnMouseClicked(mouseEvent -> {
-                    MapData.addIllnessToCell(new Pair<>(label.getCol(), label.getRow()));
-                    guiUpdater.updateLabels(State.I.getState(), grid);
-                    guiUpdater.updateDataTable();
+                    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                        MapData.addIllnessToCell(new Pair<>(label.getCol(), label.getRow()));
+                        guiUpdater.updateLabels(State.I.getState(), grid);
+                        guiUpdater.updateDataTable();
+                    }
+                    else if (mouseEvent.getButton() == MouseButton.SECONDARY){
+                        MapData.addExposedToCell(new Pair<>(label.getCol(), label.getRow()));
+                        guiUpdater.updateLabels(State.E.getState(), grid);
+                        guiUpdater.updateDataTable();
+                    }
                 });
             }
         }
