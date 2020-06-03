@@ -69,7 +69,7 @@ public class GuiUpdater {
     public void reloadLabelAtIndex(Pair<Integer, Integer> value1, State state,
             Cell cellAtIndex, GridPane grid) {
         int max = MapData.getMaxStateLevel(state);
-        ((Label) Objects.requireNonNull(GuiUtils.getNodeFromGridPane(grid, value1.getValue1(), value1.getValue0())))
+        ((Label) Objects.requireNonNull(GuiUtils.getNodeFromGridPane(grid, value1.getValue0(), value1.getValue1())))
                 .setBackground(new Background(new BackgroundFill(new Color(
                         1, 0, 0,
                         Math.max(0, (double) cellAtIndex.getStateCountMap().get(state.getState()) / max)),

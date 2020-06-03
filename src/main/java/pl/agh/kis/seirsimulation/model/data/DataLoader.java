@@ -61,9 +61,9 @@ public class DataLoader {
         int max = 0;
 
         List<List<Cell>> cells = new ArrayList<>();
-        for (var i = 0; i < guiContext.getNRows(); i++) {
+        for (var i = 0; i < guiContext.getNRows(); i++) { // i = y
             cells.add(new ArrayList<>());
-            for (var j = 0; j < guiContext.getNCols(); j++) {
+            for (var j = 0; j < guiContext.getNCols(); j++) { // j = x
                 int sum = 0;
                 for (var k = y * i; k < (i + 1) * y && k < linesParsed.size(); k++) {
                     for (var l = x * j; l < (j + 1) * x && l < linesParsed.get(0).size(); l++) {
@@ -73,7 +73,7 @@ public class DataLoader {
                     }
                 }
                 if(sum > Configuration.MIN_RANDOM_CELL){
-                    MapData.addRandomIndex(new Pair<>(i,j));
+                    MapData.addRandomIndex(new Pair<>(j,i));
                 }
                 cells.get(i).add(new Cell(sum));
             }

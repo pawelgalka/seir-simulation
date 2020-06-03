@@ -247,10 +247,10 @@ public class GuiController implements Initializable {
         guiContext.setDayOfSim(0);
         grid.setGridLinesVisible(true);
         grid.setMaxSize(guiContext.getMapWidth(), guiContext.getMapHeight());
-        for (int i = 0; i < guiContext.getNCols(); i++) {
+        for (int i = 0; i < guiContext.getNCols(); i++) { // i - x
             //            grid.add
-            for (int j = 0; j < guiContext.getNRows(); j++) {
-                CellLabel label = new CellLabel(" ", j, i);
+            for (int j = 0; j < guiContext.getNRows(); j++) { // j - y
+                CellLabel label = new CellLabel(" ", j,i);
                 label.setMinSize(Math.floor(guiContext.getMapWidth() / guiContext.getNCols()),
                         Math.floor(guiContext.getMapHeight() / guiContext.getNRows()));
                 GridPane.setColumnIndex(label, i);
@@ -259,7 +259,7 @@ public class GuiController implements Initializable {
                 guiUpdater.updateDataTable();
                 guiUpdater.updateCountryInfo();
                 label.setOnMouseClicked(mouseEvent -> {
-                    MapData.addIllnessToCell(new Pair<>(label.getRow(), label.getCol()));
+                    MapData.addIllnessToCell(new Pair<>(label.getCol(), label.getRow()));
                     guiUpdater.updateLabels(State.I.getState(), grid);
                     guiUpdater.updateDataTable();
                 });

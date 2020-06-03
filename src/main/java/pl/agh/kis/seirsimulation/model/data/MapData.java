@@ -48,6 +48,7 @@ public class MapData {
     }
 
     public static Cell getCellAtIndex(Pair<Integer, Integer> index) {
+        // index = (x,y)
         return gridMap.get(index.getValue1()).get(index.getValue0());
     }
 
