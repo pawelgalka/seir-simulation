@@ -3,6 +3,7 @@ package pl.agh.kis.seirsimulation.model.configuration.disease;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.agh.kis.seirsimulation.controller.DistancingLevel;
@@ -10,12 +11,13 @@ import pl.agh.kis.seirsimulation.controller.GuiContext;
 
 import javax.annotation.PostConstruct;
 
+@Slf4j
 @Getter
 public enum DiseaseConfig {
-    FLU(2.,6.,0.001,1.3,0.625,0.3125),
-    AH1N1(2.,6.,0.0002,1.5,0.75,0.375 ),
-    SARS(5.,14.,0.095,3.,1.5,0.75),
-    COVID19(6.,16.,0.03,2.5,1.25,0.625);
+    FLU(2., 6., 0.001, 1.3, 0.625, 0.3125),
+    AH1N1(2., 6., 0.0002, 1.5, 0.75, 0.375),
+    SARS(5., 14., 0.095, 3., 1.5, 0.75),
+    COVID19(6., 16., 0.03, 2.5, 1.25, 0.625);
 
     @Component
     public static class GuiContextInjector {
@@ -38,16 +40,41 @@ public enum DiseaseConfig {
     private final double reproductionDistancing1;
     private final double reproductionDistancing2;
 
+    private static double reproductionStep = 0.2;
+    public static int iterator = 0;
+
     public double getReproduction() {
-        if(guiContext.getDistancingLevel()== DistancingLevel.LEVEL1){
-            return reproductionDistancing1;
-        }else if (guiContext.getDistancingLevel()== DistancingLevel.LEVEL2){
-            return reproductionDistancing2;
+        if (guiContext.getDistancingLevelChange() != null) {
+            return calculateReproduction(guiContext.getDistancingLevel(), guiContext.getDistancingLevelOld());
         }
-        else return reproduction;
+        return retrieveReproductionBasedOnDistancingLevel(this, guiContext.getDistancingLevel());
     }
 
-    DiseaseConfig(double incubation, double infection, double mortality, double reproduction, double reproductionDistancing1, double reproductionDistancing2) {
+    public static double retrieveReproductionBasedOnDistancingLevel(
+            DiseaseConfig diseaseConfig,
+            DistancingLevel distancingLevel) {
+        if (distancingLevel == DistancingLevel.LEVEL1) {
+            return diseaseConfig.reproductionDistancing1;
+        } else if (distancingLevel == DistancingLevel.LEVEL2) {
+            return diseaseConfig.reproductionDistancing2;
+        } else
+            return diseaseConfig.reproduction;
+    }
+
+    private double calculateReproduction(DistancingLevel distancingLevel, DistancingLevel distancingLevelOld) {
+        var larger = Math.max(retrieveReproductionBasedOnDistancingLevel(this, distancingLevel),
+                retrieveReproductionBasedOnDistancingLevel(this, distancingLevelOld));
+        var smaller = Math.min(retrieveReproductionBasedOnDistancingLevel(this, distancingLevel),
+                retrieveReproductionBasedOnDistancingLevel(this, distancingLevelOld));
+        return retrieveReproductionBasedOnDistancingLevel(this, distancingLevel)
+                > retrieveReproductionBasedOnDistancingLevel(this, distancingLevelOld) ? Math.min(
+                smaller + iterator * reproductionStep, larger) : Math.max(
+                larger - iterator * reproductionStep, smaller);
+
+    }
+
+    DiseaseConfig(double incubation, double infection, double mortality, double reproduction,
+            double reproductionDistancing1, double reproductionDistancing2) {
         this.incubation = incubation;
         this.infection = infection;
         this.mortality = mortality;

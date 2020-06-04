@@ -38,6 +38,7 @@ public class GuiContext {
     private TableView<TableData> paramsTable;
     private List<OutputDataDto> historyData = new ArrayList<>();
     private DistancingLevel distancingLevel = DistancingLevel.NODISTANCING;
+    private DistancingLevel distancingLevelOld = DistancingLevel.NODISTANCING;
     private DistancingLevel distancingLevelChange = null;
     private boolean isNotChanging = true;
     public void dayStep(){
