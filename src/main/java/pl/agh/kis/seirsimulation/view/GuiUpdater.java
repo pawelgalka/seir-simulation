@@ -100,7 +100,7 @@ public class GuiUpdater {
         data.get(2).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.E)));
         data.get(3).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.I)));
         data.get(4).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.R)));
-        data.get(5).setValue(String.valueOf(MapData.getDeathNum()));
+        data.get(5).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.D)));
         numbers.refresh();
     }
 
@@ -124,7 +124,7 @@ public class GuiUpdater {
         guiContext.getHistoryData().add(OutputDataDto.builder().susceptible(MapData.getNumberOfStateSummary(State.S))
                 .exposed(MapData.getNumberOfStateSummary(State.E)).infectious(
                         MapData.getNumberOfStateSummary(State.I)).recovered(MapData.getNumberOfStateSummary(State.R))
-                .dead(MapData.getDeathNum())
+                .dead(MapData.getNumberOfStateSummary(State.D))
                 .day(guiContext.getDayOfSim()).build());
     }
 
@@ -138,7 +138,7 @@ public class GuiUpdater {
                 .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
         lineChart.getData().get(2).getData()
                 .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
-        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getDeathNum()));
+        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.D)));
     }
 
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface

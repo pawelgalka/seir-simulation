@@ -19,22 +19,20 @@ import java.util.stream.IntStream;
 public class Cell {
     private List<Integer> stateCountMap;
     private Integer peopleLimit;
-    private Integer D;
     private Map<Pair<Integer,Integer>, List<Integer>> immigrants;
     public Cell(Integer initCount) {
-        stateCountMap = IntStream.range(0, 4).mapToObj(x -> 0).collect(Collectors.toList());
+        stateCountMap = IntStream.range(0, 5).mapToObj(x -> 0).collect(Collectors.toList());
         stateCountMap.set(0, initCount);
         peopleLimit = 2 * initCount;
-        D = 0;
         immigrants= new HashMap<>();
     }
 
 
 
     public int[] getImmigrantsSummed(){
-        int[]sum={0,0,0,0};
+        int[]sum={0,0,0,0,0};
         immigrants.forEach((index,list)->{
-            for(int i=0;i<4;i++) {
+            for(int i=0;i<sum.length-1;i++) {
                 sum[i] += list.get(i);
             }
         });

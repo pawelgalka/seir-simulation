@@ -28,7 +28,7 @@ public class DiseaseProcess {
                 .getDailyChanges(cell);
         context.setNotChanging(context.isNotChanging() && Arrays.stream(changes).allMatch(change -> change == 0));
         Map<Pair<Integer, Integer>, List<Integer>> immigrants = cell.getImmigrants();
-        List<Integer> immigrantChangesSum = new ArrayList<>(Collections.nCopies(4, 0));
+        List<Integer> immigrantChangesSum = new ArrayList<>(Collections.nCopies(5, 0));
         var cellPeopleSum = cell.getStateCountMap().stream().mapToInt(Integer::intValue).sum();
         for (var key : immigrants.keySet()) {
             List<Integer> immigrantsFrom = new ArrayList<>(immigrants.get(key));
@@ -47,7 +47,6 @@ public class DiseaseProcess {
             immigrants.put(key, immigrantsFrom);
         }
         cell.setImmigrants(immigrants);
-        cell.setD(cell.getD() + changes[changes.length-1]);
         cell.setStateCountMap(validateAppliedChanges(changes,cell.getStateCountMap(),immigrantChangesSum));
     }
 }
