@@ -11,6 +11,7 @@ import pl.agh.kis.seirsimulation.model.State;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Data
@@ -115,6 +116,15 @@ public class MapData {
         return neighbours;
     }
 
+    public static Pair<Integer, Integer> getRandomCellCoords(List<Pair<Integer, Integer>> neighbours, Pair<Integer, Integer> sourceCell) {
+        neighbours.add(sourceCell);
+        Pair<Integer, Integer> randomCoords = new Pair<>(sourceCell.getValue0(), sourceCell.getValue1());
+        while (neighbours.contains(randomCoords)) {
+            randomCoords = getRandomIndex(ThreadLocalRandom.current().nextInt(0, getRandomSize()));
+        }
+        return randomCoords;
+    }
+
     public static int getMaxStateLevel(State state) {
         return Collections.max(gridMap.stream()
                 .map(cellsRow -> Collections
@@ -128,9 +138,10 @@ public class MapData {
         cell.getStateCountMap().set(State.I.getState(), cell.getStateCountMap().get(State.I.getState()) + 50);
         cell.getStateCountMap().set(State.S.getState(), cell.getStateCountMap().get(State.S.getState()) - 50);
     }
+
     public static void addExposedToCell(Pair<Integer, Integer> index) {
         Cell cell = getCellAtIndex(index);
-        cell.getStateCountMap().set(State.E.getState(), cell.getStateCountMap().get(State.I.getState()) + 20);
+        cell.getStateCountMap().set(State.E.getState(), cell.getStateCountMap().get(State.E.getState()) + 20);
         cell.getStateCountMap().set(State.S.getState(), cell.getStateCountMap().get(State.S.getState()) - 20);
     }
 
@@ -140,17 +151,4 @@ public class MapData {
                         .collect(Collectors.toList()).stream().reduce(0, Integer::sum)).reduce(0, Integer::sum);
     }
 
-    public static int getDeathNum() {
-        return gridMap.stream()
-                .map(cellRow -> cellRow.stream().map(Cell::getD).collect(Collectors.toList()).stream()
-                        .mapToInt(Integer::intValue).sum()).mapToInt(Integer::intValue).sum();
-    }
-
-    public static void addIllnessToCellTest(Pair<Integer, Integer> index) {
-        Cell cell = getCellAtIndex(index);
-        cell.getStateCountMap().set(State.I.getState(),
-                (int) ((cell.getStateCountMap().get(State.I.getState()) + 10000) * 5));
-        cell.getStateCountMap().set(State.S.getState(),
-                cell.getStateCountMap().get(State.S.getState()) - cell.getStateCountMap().get(State.I.getState()));
-    }
 }

@@ -5,7 +5,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -30,7 +29,6 @@ public class CSVWriter {
                 .withHeader(HEADERS))) {
             history.forEach(csvDataConsumer(printer));
         }
-        File f=new File(filename);
         if(createPdf){
             log.debug("Pdf creating");
             createPdfRaport(filename);

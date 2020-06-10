@@ -25,17 +25,23 @@ import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 import pl.agh.kis.seirsimulation.output.writer.OutputDataDto;
 
+import java.util.List;
 import java.util.Objects;
+
+import static pl.agh.kis.seirsimulation.model.data.MapData.getCellAtIndex;
 
 @Slf4j
 @Component
 public class GuiUpdater {
 
-    @Autowired GuiContext guiContext;
+    @Autowired
+    GuiContext guiContext;
 
-    @Autowired Simulation simulation;
+    @Autowired
+    Simulation simulation;
 
-    @Autowired GuiController guiController;
+    @Autowired
+    GuiController guiController;
 
     private Thread thread;
 
@@ -60,34 +66,34 @@ public class GuiUpdater {
     public void updateLabels(int state, GridPane gridPane) {
         for (int row = 0; row < guiContext.getNRows(); row++) {
             for (int col = 0; col < guiContext.getNCols(); col++) {
-                reloadLabelAtIndex(new Pair<>(row, col), State.I, MapData.getCellAtIndex(new Pair<>(row, col)),
+                reloadLabelAtIndex(new Pair<>(row, col), State.I, getCellAtIndex(new Pair<>(row, col)),
                         gridPane);
             }
         }
     }
 
     public void reloadLabelAtIndex(Pair<Integer, Integer> value1, State state,
-            Cell cellAtIndex, GridPane grid) {
+                                   Cell cellAtIndex, GridPane grid) {
         ((Label) Objects.requireNonNull(GuiUtils.getNodeFromGridPane(grid, value1.getValue0(), value1.getValue1())))
                 .setBackground(new Background(new BackgroundFill(getCellLabel(cellAtIndex.getStateCountMap().get(state.getState())),
                         CornerRadii.EMPTY,
                         Insets.EMPTY)));
     }
 
-    public Color getCellLabel(int stateNum){
-        if(stateNum==0){
+    public Color getCellLabel(int stateNum) {
+        if (stateNum == 0) {
             return new Color(
                     1, 0, 0,
                     0);
-        }else if (stateNum>0&&stateNum<=10){
-            return Color.rgb(41,242,81,0.6);
-        }else if (stateNum>10&&stateNum<=100){
-            return Color.rgb(215,247,7,0.6);
-        }else if (stateNum>100&&stateNum<=1000){
-            return Color.rgb(247,191,7,0.6);
-        }else if (stateNum>1000&&stateNum<=10000){
-            return Color.rgb(247,119,7,0.6);
-        }else return Color.rgb(247,7,7,0.6);
+        } else if (stateNum > 0 && stateNum <= 10) {
+            return Color.rgb(41, 242, 81, 0.6);
+        } else if (stateNum > 10 && stateNum <= 100) {
+            return Color.rgb(215, 247, 7, 0.6);
+        } else if (stateNum > 100 && stateNum <= 1000) {
+            return Color.rgb(247, 191, 7, 0.6);
+        } else if (stateNum > 1000 && stateNum <= 10000) {
+            return Color.rgb(247, 119, 7, 0.6);
+        } else return Color.rgb(247, 7, 7, 0.6);
     }
 
     public void updateDataTable() {
@@ -100,7 +106,7 @@ public class GuiUpdater {
         data.get(2).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.E)));
         data.get(3).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.I)));
         data.get(4).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.R)));
-        data.get(5).setValue(String.valueOf(MapData.getDeathNum()));
+        data.get(5).setValue(String.valueOf(MapData.getNumberOfStateSummary(State.D)));
         numbers.refresh();
     }
 
@@ -108,23 +114,44 @@ public class GuiUpdater {
         simulation.step();
         simulation.updateMortality();
         updateDiseaseParams();
-        updateLabels(State.I.getState(), guiContext.getGridPane());
-        updateHistory();
-        updateDataTable();
-        updateChartData();
-        if (guiContext.isNotChanging()){
+        updateGUI();
+        if (guiContext.isNotChanging()) {
+            simulation.step();
+            cleanEI();
+            updateGUI();
             guiContext.setSimRunning(false);
             log.debug("NONE CHANGES");
             guiController.message();
         }
-        //TODO: sim ended no changes handle to 0 E,I
     }
+
+    private void cleanEI() {
+        for (int row = 0; row < guiContext.getNRows(); row++) {
+            for (int col = 0; col < guiContext.getNCols(); col++) {
+                List<Integer> scm = getCellAtIndex(new Pair<>(row, col)).getStateCountMap();
+                Integer sumEI = scm.get(State.E.getState()) + scm.get(State.I.getState());
+                int deaths = (int)Math.round(sumEI * guiContext.getDiseaseConfig().getMortality());
+                scm.set(State.E.getState(), 0);
+                scm.set(State.I.getState(), 0);
+                scm.set(State.D.getState(), scm.get(State.D.getState()) + deaths);
+                scm.set(State.R.getState(), scm.get(State.R.getState()) + (sumEI - deaths));
+            }
+        }
+    }
+
+    private void updateGUI() {
+        updateLabels(State.I.getState(), guiContext.getGridPane());
+        updateHistory();
+        updateDataTable();
+        updateChartData();
+    }
+
 
     private void updateHistory() {
         guiContext.getHistoryData().add(OutputDataDto.builder().susceptible(MapData.getNumberOfStateSummary(State.S))
                 .exposed(MapData.getNumberOfStateSummary(State.E)).infectious(
                         MapData.getNumberOfStateSummary(State.I)).recovered(MapData.getNumberOfStateSummary(State.R))
-                .dead(MapData.getDeathNum())
+                .dead(MapData.getNumberOfStateSummary(State.D))
                 .day(guiContext.getDayOfSim()).build());
     }
 
@@ -138,7 +165,7 @@ public class GuiUpdater {
                 .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
         lineChart.getData().get(2).getData()
                 .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
-        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getDeathNum()));
+        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.D)));
     }
 
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface

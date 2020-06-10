@@ -23,7 +23,6 @@ public class SeirSimulationApplication extends Application {
     @Override
     public void init() throws Exception {
         springContext = SpringApplication.run(SeirSimulationApplication.class);
-//        ((DiseaseProcess) springContext.getBean("diseaseProcess")).test();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         root = fxmlLoader.load();
