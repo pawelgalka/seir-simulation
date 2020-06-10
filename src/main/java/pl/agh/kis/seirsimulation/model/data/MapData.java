@@ -141,7 +141,7 @@ public class MapData {
 
     public static void addExposedToCell(Pair<Integer, Integer> index) {
         Cell cell = getCellAtIndex(index);
-        cell.getStateCountMap().set(State.E.getState(), cell.getStateCountMap().get(State.I.getState()) + 20);
+        cell.getStateCountMap().set(State.E.getState(), cell.getStateCountMap().get(State.E.getState()) + 20);
         cell.getStateCountMap().set(State.S.getState(), cell.getStateCountMap().get(State.S.getState()) - 20);
     }
 
@@ -151,11 +151,4 @@ public class MapData {
                         .collect(Collectors.toList()).stream().reduce(0, Integer::sum)).reduce(0, Integer::sum);
     }
 
-    public static void addIllnessToCellTest(Pair<Integer, Integer> index) {
-        Cell cell = getCellAtIndex(index);
-        cell.getStateCountMap().set(State.I.getState(),
-                (int) ((cell.getStateCountMap().get(State.I.getState()) + 10000) * 5));
-        cell.getStateCountMap().set(State.S.getState(),
-                cell.getStateCountMap().get(State.S.getState()) - cell.getStateCountMap().get(State.I.getState()));
-    }
 }

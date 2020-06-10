@@ -56,10 +56,10 @@ public class Simulation {
     }
 
     public void updateMortality() {
-        if (MapData.getNumberOfStateSummary(State.I) * HOSPITALIZATION_PERC > MAX_HOSPITAL) {
+        if (MapData.getNumberOfStateSummary(State.I) * DISEASE_CONFIG.getHospitalizationPerc() > MAX_HOSPITAL) {
             DISEASE_CONFIG.setMortality(
-                    BASE_MORTALITY + (MapData.getNumberOfStateSummary(State.I) * HOSPITALIZATION_PERC / 1000000));
-        } else if (MapData.getNumberOfStateSummary(State.I) * HOSPITALIZATION_PERC <= MAX_HOSPITAL) {
+                    BASE_MORTALITY + (MapData.getNumberOfStateSummary(State.I) * DISEASE_CONFIG.getHospitalizationPerc() / 1000000));
+        } else if (MapData.getNumberOfStateSummary(State.I) * DISEASE_CONFIG.getHospitalizationPerc() <= MAX_HOSPITAL) {
             DISEASE_CONFIG.setMortality(BASE_MORTALITY);
         }
     }

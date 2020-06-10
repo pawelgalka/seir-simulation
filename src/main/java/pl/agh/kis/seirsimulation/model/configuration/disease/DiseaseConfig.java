@@ -14,10 +14,10 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @Getter
 public enum DiseaseConfig {
-    FLU(2., 6., 0.001, 1.3, 0.625, 0.3125),
-    AH1N1(2., 6., 0.0002, 1.5, 0.75, 0.375),
-    SARS(5., 14., 0.095, 3., 1.5, 0.75),
-    COVID19(6., 16., 0.03, 2.5, 1.25, 0.625);
+    FLU(2., 6., 0.001, 1.3, 0.625, 0.3125, 0.00069),
+    AH1N1(2., 6., 0.0002, 1.5, 0.75, 0.375, 0.00075),
+    SARS(5., 14., 0.095, 3., 1.5, 0.75, 0.12),
+    COVID19(6., 16., 0.03, 2.5, 1.25, 0.625,0.15);
 
     @Component
     public static class GuiContextInjector {
@@ -39,6 +39,7 @@ public enum DiseaseConfig {
     private final double reproduction;
     private final double reproductionDistancing1;
     private final double reproductionDistancing2;
+    private final double hospitalizationPerc;
 
     private static double reproductionStep = 0.2;
     public static int iterator = 0;
@@ -74,12 +75,13 @@ public enum DiseaseConfig {
     }
 
     DiseaseConfig(double incubation, double infection, double mortality, double reproduction,
-            double reproductionDistancing1, double reproductionDistancing2) {
+                  double reproductionDistancing1, double reproductionDistancing2, double hospitalizationPerc) {
         this.incubation = incubation;
         this.infection = infection;
         this.mortality = mortality;
         this.reproduction = reproduction;
         this.reproductionDistancing1 = reproductionDistancing1;
         this.reproductionDistancing2 = reproductionDistancing2;
+        this.hospitalizationPerc = hospitalizationPerc;
     }
 }

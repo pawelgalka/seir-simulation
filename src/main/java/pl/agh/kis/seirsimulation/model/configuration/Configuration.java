@@ -16,11 +16,9 @@ public class Configuration {
     //Virus Config
     public static double BASE_MORTALITY;
     public static DiseaseConfig DISEASE_CONFIG;
-    public static double HOSPITALIZATION_PERC=0.15;
 
     //Poland Statistics 2019
     // TODO: 29.04.2020 move to CountryConfig class dao
-
     public static final double BIRTH_RATE = 10. / 365;
     public static final double DEATH_RATE = 10. / 365;
     public static int MAX_HOSPITAL;
@@ -42,7 +40,7 @@ public class Configuration {
     }
     public static void setMaxHospital(String country){
         switch (country){
-            case "poland"://https://www.medonet.pl/koronawirus/koronawirus-w-polsce,ile-jest-w-polsce-szpitali-zakaznych--ile-respiratorow-i-miejsc-dla-pacjentow-zakazonych-koronawirusem--sprawdzamy,artykul,41053941.html
+            case "poland":
                 MAX_HOSPITAL=10000;
             default:
                 MAX_HOSPITAL=10000;
