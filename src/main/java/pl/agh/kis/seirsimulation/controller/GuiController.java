@@ -290,7 +290,7 @@ public class GuiController implements Initializable {
 
     private void addCountryChoiceListener() {
         choice.setPromptText("Choose country");
-        choice.setItems(FXCollections.observableArrayList("Polska"));
+        choice.setItems(FXCollections.observableArrayList("Polska", "Francja", "Niemcy", "Portugalia"));
         choice.getSelectionModel().selectedItemProperty().addListener(
                 (observableValue, oldChoice, newChoice) -> guiContext.setCountry(newChoice));
     }
