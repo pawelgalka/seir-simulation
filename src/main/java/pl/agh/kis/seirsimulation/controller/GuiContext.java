@@ -22,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 public class GuiContext {
     private String country;
+    private Double vaccinationRate;
     private double mapWidth;
     private double mapHeight;
     private boolean simRunning;

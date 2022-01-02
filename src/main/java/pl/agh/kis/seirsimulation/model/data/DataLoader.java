@@ -33,7 +33,7 @@ public class DataLoader {
     @Autowired
     GuiContext guiContext;
 
-    public void mapData(String country) throws IOException {
+    public void mapData(String country, Double vaccinationRate) throws IOException {
         Path file = Paths.get(loadMap(country).getURI());
         setMaxHospital(country);
 
@@ -75,7 +75,7 @@ public class DataLoader {
                 if(sum > Configuration.MIN_RANDOM_CELL){
                     MapData.addRandomIndex(new Pair<>(j,i));
                 }
-                cells.get(i).add(new Cell(sum));
+                cells.get(i).add(new Cell(sum, vaccinationRate));
             }
         }
         MapData.setGridMap(cells);

@@ -91,6 +91,9 @@ public class GuiController implements Initializable {
     ComboBox<String> choice;
 
     @FXML
+    ComboBox<Double> vaxChoice;
+
+    @FXML
     TableView<TableData> numbers;
 
     @FXML
@@ -190,6 +193,7 @@ public class GuiController implements Initializable {
         });
 
         addCountryChoiceListener();
+        addVaxChoiceListener();
         fillDiseaseChoice();
         fillSocialDistancingChooser();
         loadGraphicalMap();
@@ -228,7 +232,7 @@ public class GuiController implements Initializable {
         load.setOnMouseClicked(mouseEvent -> ofNullable(guiContext.getCountry()).ifPresentOrElse(country -> {
             log.debug("Loading map of {}", country);
             try {
-                dataLoader.mapData(country.toLowerCase());
+                dataLoader.mapData(country.toLowerCase(), guiContext.getVaccinationRate());
             } catch (IOException e) {
                 log.error("Error while parsing data", e);
             }
@@ -289,6 +293,14 @@ public class GuiController implements Initializable {
         choice.setItems(FXCollections.observableArrayList("Polska"));
         choice.getSelectionModel().selectedItemProperty().addListener(
                 (observableValue, oldChoice, newChoice) -> guiContext.setCountry(newChoice));
+    }
+
+    private void addVaxChoiceListener(){
+        vaxChoice.setPromptText("Choose vaccination rate");
+        vaxChoice.setItems(FXCollections.observableArrayList(0.0,25.0,50.0,75.0));
+        vaxChoice.getSelectionModel().selectedItemProperty().addListener(
+                (observableValue, oldChoice, newChoice) -> guiContext.setVaccinationRate(newChoice));
+        vaxChoice.getSelectionModel().selectFirst();
     }
 
     private void fillDiseaseChoice() {
