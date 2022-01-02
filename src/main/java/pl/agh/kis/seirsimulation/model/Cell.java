@@ -20,9 +20,12 @@ public class Cell {
     private List<Integer> stateCountMap;
     private Integer peopleLimit;
     private Map<Pair<Integer,Integer>, List<Integer>> immigrants;
-    public Cell(Integer initCount) {
+    public Cell(Integer initCount, double vacPerc) {
         stateCountMap = IntStream.range(0, 5).mapToObj(x -> 0).collect(Collectors.toList());
-        stateCountMap.set(0, initCount);
+        int vaccinated = (int) (vacPerc * initCount / 100);
+        int notVaccinated = initCount - vaccinated;
+        stateCountMap.set(0, notVaccinated);
+        stateCountMap.set(3, vaccinated);
         peopleLimit = 2 * initCount;
         immigrants= new HashMap<>();
     }
