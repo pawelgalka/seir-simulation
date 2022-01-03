@@ -1,14 +1,19 @@
 package pl.agh.kis.seirsimulation.model;
 
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.BASE_MORTALITY;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.DISEASE_CONFIG;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.MAX_HOSPITAL;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.model.configuration.disease.DiseaseConfig;
 import pl.agh.kis.seirsimulation.model.data.MapData;
-
-import static pl.agh.kis.seirsimulation.model.configuration.Configuration.*;
 
 @Slf4j
 @NoArgsConstructor
@@ -29,13 +34,13 @@ public class Simulation {
         context.setNotChanging(true);
         context.dayStep();
         movementProcess.makeMove();
-        for (var row : MapData.getGridMap()) {
-            for (var cell : row) {
+        for (List<Cell> row : MapData.getGridMap()) {
+            for (Cell cell : row) {
                 diseaseProcess.simulateDayAtSingleCell(cell);
             }
         }
-        for (var row : MapData.getGridMap()) {
-            for (var cell : row) {
+        for (List<Cell> row : MapData.getGridMap()) {
+            for (Cell cell : row) {
                 movementProcess.makeMoveBack(cell);
             }
         }
@@ -46,8 +51,7 @@ public class Simulation {
                 context.setDistancingLevelChange(null);
                 log.debug("CHANGED");
                 DiseaseConfig.iterator = 0;
-            }
-            else {
+            } else {
                 log.debug("CHANGING ITERATION {}", DiseaseConfig.iterator);
                 DiseaseConfig.iterator++;
             }
@@ -58,7 +62,8 @@ public class Simulation {
     public void updateMortality() {
         if (MapData.getNumberOfStateSummary(State.I) * DISEASE_CONFIG.getHospitalizationPerc() > MAX_HOSPITAL) {
             DISEASE_CONFIG.setMortality(
-                    BASE_MORTALITY + (MapData.getNumberOfStateSummary(State.I) * DISEASE_CONFIG.getHospitalizationPerc() / 1000000));
+                    BASE_MORTALITY + (MapData.getNumberOfStateSummary(State.I) * DISEASE_CONFIG.getHospitalizationPerc()
+                            / 1000000));
         } else if (MapData.getNumberOfStateSummary(State.I) * DISEASE_CONFIG.getHospitalizationPerc() <= MAX_HOSPITAL) {
             DISEASE_CONFIG.setMortality(BASE_MORTALITY);
         }

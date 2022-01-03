@@ -1,13 +1,12 @@
 package pl.agh.kis.seirsimulation.model.data;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DataValidator {
@@ -16,8 +15,9 @@ public class DataValidator {
             changes[2] = -(changes[3] + changes[4]);
             changes[0] = 0;
         }
-        var sum = 0;
-        for (int i:changes) sum+=i;
+        int sum = 0;
+        for (int i : changes)
+            sum += i;
         while (sum > 0) {
             changes[ThreadLocalRandom.current().nextInt(0, changes.length - 2)] -= 1;
             sum = IntStream.of(changes).sum();
@@ -29,7 +29,8 @@ public class DataValidator {
         return changes;
     }
 
-    public static List<Integer> validateAppliedChanges(int[] changes, List<Integer> scm, List<Integer> immigrantChangesSum) {
+    public static List<Integer> validateAppliedChanges(int[] changes, List<Integer> scm,
+            List<Integer> immigrantChangesSum) {
         List<Integer> newScm = new ArrayList<>(Collections.nCopies(5, 0));
         for (int i = 0; i < scm.size(); i++) {
             if (scm.get(i) + (changes[i] - immigrantChangesSum.get(i)) < 0) {

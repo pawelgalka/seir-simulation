@@ -1,26 +1,28 @@
 package pl.agh.kis.seirsimulation.model.data;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.javatuples.Pair;
-import pl.agh.kis.seirsimulation.model.Cell;
-import pl.agh.kis.seirsimulation.model.State;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import org.javatuples.Pair;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import pl.agh.kis.seirsimulation.model.Cell;
+import pl.agh.kis.seirsimulation.model.State;
+
 @Data
 @Builder
 @Getter
 @Setter
 public class MapData {
-    static List<List<Cell>> gridMap;
     static public List<Pair<Integer, Integer>> cellsForRandomIllness = new ArrayList<>();
+    static List<List<Cell>> gridMap;
+    static Integer maxValue;
 
     public static Integer getMaxValue() {
         return maxValue;
@@ -29,8 +31,6 @@ public class MapData {
     public static void setMaxValue(Integer maxValue) {
         MapData.maxValue = maxValue;
     }
-
-    static Integer maxValue;
 
     public static List<List<Cell>> getGridMap() {
         return gridMap;
@@ -116,7 +116,8 @@ public class MapData {
         return neighbours;
     }
 
-    public static Pair<Integer, Integer> getRandomCellCoords(List<Pair<Integer, Integer>> neighbours, Pair<Integer, Integer> sourceCell) {
+    public static Pair<Integer, Integer> getRandomCellCoords(List<Pair<Integer, Integer>> neighbours,
+            Pair<Integer, Integer> sourceCell) {
         neighbours.add(sourceCell);
         Pair<Integer, Integer> randomCoords = new Pair<>(sourceCell.getValue0(), sourceCell.getValue1());
         while (neighbours.contains(randomCoords)) {

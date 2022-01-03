@@ -7,7 +7,7 @@ import lombok.Getter;
 public class CellLabel extends Label {
     int row, col;
 
-    CellLabel(String s, int row, int col){
+    CellLabel(String s, int row, int col) {
         super(s);
         this.row = row;
         this.col = col;

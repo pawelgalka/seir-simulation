@@ -15,7 +15,8 @@
     <description>Project studio</description>
 
     <properties>
-        <java.version>11</java.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -103,6 +104,14 @@
                 <version>0.0.3</version>
                 <configuration>
                     <mainClass>pl.agh.kis.seirsimulation.SeirSimulationApplication</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
 

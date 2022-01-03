@@ -1,34 +1,38 @@
 package pl.agh.kis.seirsimulation.view;
 
+import static pl.agh.kis.seirsimulation.model.data.MapData.getCellAtIndex;
+
+import java.util.List;
+import java.util.Objects;
+
+import org.javatuples.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
-import org.javatuples.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import pl.agh.kis.seirsimulation.controller.GuiContext;
 import pl.agh.kis.seirsimulation.controller.GuiController;
+import pl.agh.kis.seirsimulation.controller.TableData;
 import pl.agh.kis.seirsimulation.model.Cell;
 import pl.agh.kis.seirsimulation.model.Simulation;
 import pl.agh.kis.seirsimulation.model.State;
 import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 import pl.agh.kis.seirsimulation.model.data.MapData;
 import pl.agh.kis.seirsimulation.output.writer.OutputDataDto;
-
-import java.util.List;
-import java.util.Objects;
-
-import static pl.agh.kis.seirsimulation.model.data.MapData.getCellAtIndex;
 
 @Slf4j
 @Component
@@ -73,18 +77,17 @@ public class GuiUpdater {
     }
 
     public void reloadLabelAtIndex(Pair<Integer, Integer> value1, State state,
-                                   Cell cellAtIndex, GridPane grid) {
+            Cell cellAtIndex, GridPane grid) {
         ((Label) Objects.requireNonNull(GuiUtils.getNodeFromGridPane(grid, value1.getValue0(), value1.getValue1())))
-                .setBackground(new Background(new BackgroundFill(getCellLabel(cellAtIndex.getStateCountMap().get(state.getState())),
-                        CornerRadii.EMPTY,
-                        Insets.EMPTY)));
+                .setBackground(new Background(
+                        new BackgroundFill(getCellLabel(cellAtIndex.getStateCountMap().get(state.getState())),
+                                CornerRadii.EMPTY,
+                                Insets.EMPTY)));
     }
 
     public Color getCellLabel(int stateNum) {
         if (stateNum == 0) {
-            return new Color(
-                    1, 0, 0,
-                    0);
+            return Color.rgb(1, 0, 0, 0);
         } else if (stateNum > 0 && stateNum <= 10) {
             return Color.rgb(41, 242, 81, 0.6);
         } else if (stateNum > 10 && stateNum <= 100) {
@@ -93,12 +96,13 @@ public class GuiUpdater {
             return Color.rgb(247, 191, 7, 0.6);
         } else if (stateNum > 1000 && stateNum <= 10000) {
             return Color.rgb(247, 119, 7, 0.6);
-        } else return Color.rgb(247, 7, 7, 0.6);
+        } else
+            return Color.rgb(247, 7, 7, 0.6);
     }
 
     public void updateDataTable() {
-        var data = guiContext.getSimulationData();
-        var numbers = guiContext.getTableView();
+        ObservableList<TableData> data = guiContext.getSimulationData();
+        TableView<TableData> numbers = guiContext.getTableView();
         data.get(0).setValue(String.valueOf(guiContext.getDayOfSim()));
         data.get(1).setValue(String.valueOf(
                 MapData.getNumberOfStateSummary(State.S) + MapData.getNumberOfStateSummary(State.I) + MapData
@@ -130,7 +134,7 @@ public class GuiUpdater {
             for (int col = 0; col < guiContext.getNCols(); col++) {
                 List<Integer> scm = getCellAtIndex(new Pair<>(row, col)).getStateCountMap();
                 Integer sumEI = scm.get(State.E.getState()) + scm.get(State.I.getState());
-                int deaths = (int)Math.round(sumEI * guiContext.getDiseaseConfig().getMortality());
+                int deaths = (int) Math.round(sumEI * guiContext.getDiseaseConfig().getMortality());
                 scm.set(State.E.getState(), 0);
                 scm.set(State.I.getState(), 0);
                 scm.set(State.D.getState(), scm.get(State.D.getState()) + deaths);
@@ -146,7 +150,6 @@ public class GuiUpdater {
         updateChartData();
     }
 
-
     private void updateHistory() {
         guiContext.getHistoryData().add(OutputDataDto.builder().susceptible(MapData.getNumberOfStateSummary(State.S))
                 .exposed(MapData.getNumberOfStateSummary(State.E)).infectious(
@@ -157,7 +160,7 @@ public class GuiUpdater {
 
     private void updateChartData() {
         final LineChart<String, Number> lineChart = guiContext.getChartData();
-        var seriesCategory = String.valueOf(guiContext.getDayOfSim());
+        String seriesCategory = String.valueOf(guiContext.getDayOfSim());
         //        lineChart.getData().get(0).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.S)));
         lineChart.getData().get(0).getData()
                 .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.E)));
@@ -165,7 +168,8 @@ public class GuiUpdater {
                 .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.I)));
         lineChart.getData().get(2).getData()
                 .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.R)));
-        lineChart.getData().get(3).getData().add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.D)));
+        lineChart.getData().get(3).getData()
+                .add(new XYChart.Data<>(seriesCategory, MapData.getNumberOfStateSummary(State.D)));
     }
 
     // TODO: 21.04.2020 move to history sthlike class updater and create unified interface
@@ -201,8 +205,8 @@ public class GuiUpdater {
     }
 
     public void updateDiseaseParams() {
-        var table = guiContext.getParamsTable();
-        var data = table.getItems();
+        TableView<TableData> table = guiContext.getParamsTable();
+        ObservableList<TableData> data = table.getItems();
         data.get(0).setValue(String.valueOf(guiContext.getDiseaseConfig().getIncubation()));
         data.get(1).setValue(String.valueOf(guiContext.getDiseaseConfig().getInfection()));
         data.get(2).setValue(String.valueOf(guiContext.getDiseaseConfig().getMortality()));
@@ -213,8 +217,8 @@ public class GuiUpdater {
     }
 
     public void updateCountryInfo() {
-        var table = guiContext.getParamsTable();
-        var data = table.getItems();
+        TableView<TableData> table = guiContext.getParamsTable();
+        ObservableList<TableData> data = table.getItems();
         data.get(6).setValue(String.valueOf(Configuration.BIRTH_RATE));
         data.get(7).setValue(String.valueOf(Configuration.DEATH_RATE));
         data.get(8).setValue(String.valueOf(Configuration.MOVING_PPL_PERC));
@@ -223,9 +227,9 @@ public class GuiUpdater {
     }
 
     public void cleanSimData() {
-        var table = guiContext.getParamsTable();
-        var data = table.getItems();
-        var populationTable = guiContext.getTableView();
+        TableView<TableData> table = guiContext.getParamsTable();
+        ObservableList<TableData> data = table.getItems();
+        TableView<TableData> populationTable = guiContext.getTableView();
         LineChart<String, Number> lineChart = guiContext.getChartData();
 
         data.forEach(row -> row.setValue(""));

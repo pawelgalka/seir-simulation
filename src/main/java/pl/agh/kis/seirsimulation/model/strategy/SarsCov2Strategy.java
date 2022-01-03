@@ -1,12 +1,13 @@
 package pl.agh.kis.seirsimulation.model.strategy;
 
-import pl.agh.kis.seirsimulation.model.Cell;
-
 import java.util.List;
+
+import pl.agh.kis.seirsimulation.model.Cell;
 
 public class SarsCov2Strategy implements DiseaseStrategy {
     @Override
-    public int calculateSusceptibleChange(List<Integer> stateCount, double stateCountSum, boolean lessThanHundredInfected) {
+    public int calculateSusceptibleChange(List<Integer> stateCount, double stateCountSum,
+            boolean lessThanHundredInfected) {
         return 0;
     }
 

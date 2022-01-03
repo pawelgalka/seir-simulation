@@ -1,5 +1,8 @@
 package pl.agh.kis.seirsimulation.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.collections.ObservableList;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -12,9 +15,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.agh.kis.seirsimulation.model.configuration.disease.DiseaseConfig;
 import pl.agh.kis.seirsimulation.output.writer.OutputDataDto;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Getter
@@ -42,7 +42,8 @@ public class GuiContext {
     private DistancingLevel distancingLevelOld = DistancingLevel.NODISTANCING;
     private DistancingLevel distancingLevelChange = null;
     private boolean isNotChanging = true;
-    public void dayStep(){
+
+    public void dayStep() {
         dayOfSim++;
     }
 }

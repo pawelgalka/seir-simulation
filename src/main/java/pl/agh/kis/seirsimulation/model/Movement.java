@@ -1,9 +1,12 @@
 package pl.agh.kis.seirsimulation.model;
 
-import lombok.extern.slf4j.Slf4j;
-import org.javatuples.Pair;
-import org.springframework.stereotype.Component;
-import pl.agh.kis.seirsimulation.model.data.MapData;
+import static java.lang.Math.round;
+import static pl.agh.kis.seirsimulation.model.Cell.isSick;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.MOVING_PPL_PERC;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.MOVING_PPL_SICK;
+import static pl.agh.kis.seirsimulation.model.data.MapData.getCellAtIndex;
+import static pl.agh.kis.seirsimulation.model.data.MapData.getNeighboursOfCell;
+import static pl.agh.kis.seirsimulation.model.data.MapData.getRandomCellCoords;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,11 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.lang.Math.round;
-import static pl.agh.kis.seirsimulation.model.Cell.isSick;
-import static pl.agh.kis.seirsimulation.model.configuration.Configuration.MOVING_PPL_PERC;
-import static pl.agh.kis.seirsimulation.model.configuration.Configuration.MOVING_PPL_SICK;
-import static pl.agh.kis.seirsimulation.model.data.MapData.*;
+import org.javatuples.Pair;
+import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
+import pl.agh.kis.seirsimulation.model.data.MapData;
 
 @Component
 @Slf4j
@@ -24,8 +27,8 @@ public class Movement {
     public void makeMove() {
         for (int y = 0; y < MapData.getGridMap().size(); y++) {
             for (int x = 0; x < MapData.getGridMap().get(0).size(); x++) {
-                var neighbours = getNeighboursOfCell(new Pair<>(x, y));
-                neighbours.add(getRandomCellCoords(new ArrayList<>(neighbours),new Pair<>(x,y)));
+                List<Pair<Integer, Integer>> neighbours = getNeighboursOfCell(new Pair<>(x, y));
+                neighbours.add(getRandomCellCoords(new ArrayList<>(neighbours), new Pair<>(x, y)));
                 long notEmptyNeighbours = neighbours.stream()
                         .filter(e -> getCellAtIndex(e).getStateCountMap().stream().mapToInt(Integer::intValue).sum()
                                 > 0).count();
@@ -47,7 +50,7 @@ public class Movement {
 
     public void makeMoveBack(Cell sourceCell) {
         List<Integer> immigrantsFrom;
-        for (var immigrantKey : sourceCell.getImmigrants().keySet()) {
+        for (Pair<Integer, Integer> immigrantKey : sourceCell.getImmigrants().keySet()) {
             immigrantsFrom = sourceCell.getImmigrants().getOrDefault(immigrantKey, Collections.emptyList());
             List<Integer> neighbourSCM = getCellAtIndex(immigrantKey).getStateCountMap();
             for (int j = 0; j < sourceCell.getImmigrants().get(immigrantKey).size(); j++) {

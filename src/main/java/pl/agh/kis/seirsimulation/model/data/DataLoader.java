@@ -1,14 +1,7 @@
 package pl.agh.kis.seirsimulation.model.data;
 
-import lombok.extern.slf4j.Slf4j;
-import org.javatuples.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import pl.agh.kis.seirsimulation.controller.GuiContext;
-import pl.agh.kis.seirsimulation.model.Cell;
-import pl.agh.kis.seirsimulation.model.State;
-import pl.agh.kis.seirsimulation.model.configuration.Configuration;
+import static java.lang.Math.ceil;
+import static pl.agh.kis.seirsimulation.model.configuration.Configuration.setMaxHospital;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,8 +14,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.lang.Math.ceil;
-import static pl.agh.kis.seirsimulation.model.configuration.Configuration.setMaxHospital;
+import org.javatuples.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import lombok.extern.slf4j.Slf4j;
+import pl.agh.kis.seirsimulation.controller.GuiContext;
+import pl.agh.kis.seirsimulation.model.Cell;
+import pl.agh.kis.seirsimulation.model.State;
+import pl.agh.kis.seirsimulation.model.configuration.Configuration;
 
 @Slf4j
 public class DataLoader {
@@ -47,7 +48,7 @@ public class DataLoader {
                         Collectors.toList());
 
         List<Integer> emptyColumns = new ArrayList<>();
-        for (var j = 0; j < linesParsed.get(0).size(); j++) {
+        for (int j = 0; j < linesParsed.get(0).size(); j++) {
             if (isColumnZero(linesParsed, j)) {
                 emptyColumns.add(j);
             }
@@ -55,25 +56,25 @@ public class DataLoader {
         emptyColumns.sort(Comparator.reverseOrder());
         linesParsed.forEach(line -> emptyColumns.forEach(x -> line.remove((int) x)));
 
-        var y = (int) ceil((double) linesParsed.size() / guiContext.getNRows());
-        var x = (int) ceil((double) linesParsed.get(0).size() / guiContext.getNCols());
+        int y = (int) ceil((double) linesParsed.size() / guiContext.getNRows());
+        int x = (int) ceil((double) linesParsed.get(0).size() / guiContext.getNCols());
 
         int max = 0;
 
         List<List<Cell>> cells = new ArrayList<>();
-        for (var i = 0; i < guiContext.getNRows(); i++) { // i = y
+        for (int i = 0; i < guiContext.getNRows(); i++) { // i = y
             cells.add(new ArrayList<>());
-            for (var j = 0; j < guiContext.getNCols(); j++) { // j = x
+            for (int j = 0; j < guiContext.getNCols(); j++) { // j = x
                 int sum = 0;
-                for (var k = y * i; k < (i + 1) * y && k < linesParsed.size(); k++) {
-                    for (var l = x * j; l < (j + 1) * x && l < linesParsed.get(0).size(); l++) {
+                for (int k = y * i; k < (i + 1) * y && k < linesParsed.size(); k++) {
+                    for (int l = x * j; l < (j + 1) * x && l < linesParsed.get(0).size(); l++) {
                         sum += linesParsed.get(k).get(l);
 
                         max = Math.max(sum, max);
                     }
                 }
-                if(sum > Configuration.MIN_RANDOM_CELL){
-                    MapData.addRandomIndex(new Pair<>(j,i));
+                if (sum > Configuration.MIN_RANDOM_CELL) {
+                    MapData.addRandomIndex(new Pair<>(j, i));
                 }
                 cells.get(i).add(new Cell(sum, vaccinationRate));
             }

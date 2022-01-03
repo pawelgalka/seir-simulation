@@ -12,38 +12,35 @@ public class Configuration {
     public static final StrategyEnum DISEASE_STRATEGY = StrategyEnum.NO_VITAL_SEIR;
     public static final double MOVING_PPL_PERC = 0.25;
     public static final double MOVING_PPL_SICK = 0.1;
-
+    //Poland Statistics 2019
+    public static final double BIRTH_RATE = 10. / 365;
+    public static final double DEATH_RATE = 10. / 365;
+    public static final int MIN_RANDOM_CELL = 100;
     //Virus Config
     public static double BASE_MORTALITY;
     public static DiseaseConfig DISEASE_CONFIG;
-
-    //Poland Statistics 2019
-    // TODO: 29.04.2020 move to CountryConfig class dao
-    public static final double BIRTH_RATE = 10. / 365;
-    public static final double DEATH_RATE = 10. / 365;
     public static int MAX_HOSPITAL;
-
-
-    public static final int MIN_RANDOM_CELL = 100;
 
     public static double CONTACT_RATE() {
         return DISEASE_CONFIG.getReproduction() * ((DEATH_RATE + (1. / DISEASE_CONFIG.getIncubation())) / (1.
-                        / DISEASE_CONFIG.getIncubation())) * (DEATH_RATE + (1. / DISEASE_CONFIG
-                        .getInfection()));
+                / DISEASE_CONFIG.getIncubation())) * (DEATH_RATE + (1. / DISEASE_CONFIG
+                .getInfection()));
     }
 
     public static double CONTACT_RATE_NO_VITAL() {
         return DISEASE_CONFIG.getReproduction() * (1. / DISEASE_CONFIG.getInfection());
     }
+
     public static void setDiseaseConfig(DiseaseConfig diseaseConfig) {
         DISEASE_CONFIG = diseaseConfig;
     }
-    public static void setMaxHospital(String country){
-        switch (country){
+
+    public static void setMaxHospital(String country) {
+        switch (country) {
             case "poland":
-                MAX_HOSPITAL=10000;
+                MAX_HOSPITAL = 10000;
             default:
-                MAX_HOSPITAL=10000;
+                MAX_HOSPITAL = 10000;
         }
     }
 
@@ -55,6 +52,7 @@ public class Configuration {
         } else
             return Math.floor(arg);
     }
+
     public static double ceilOrFloor(double arg) {
         if (arg > 0) {
             return Math.floor(arg);
