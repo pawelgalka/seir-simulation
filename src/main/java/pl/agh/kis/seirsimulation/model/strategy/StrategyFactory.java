@@ -12,6 +12,10 @@ public class StrategyFactory {
                 return new SarsCov2Strategy();
             case NO_VITAL_SEIR:
                 return new SeirNoVitalsStrategy();
+            case NO_VITAL_SIR:
+                return new SirNoVitalsStrategy();
+            case NO_VITAL_SEIRS:
+                return new SeirsNoVitalsStrategy();
             default:
                 return new SeirStrategy();
         }

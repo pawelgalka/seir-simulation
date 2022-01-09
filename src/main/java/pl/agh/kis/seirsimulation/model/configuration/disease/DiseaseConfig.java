@@ -15,26 +15,28 @@ import pl.agh.kis.seirsimulation.controller.GuiContext;
 @Slf4j
 @Getter
 public enum DiseaseConfig {
-    FLU(2., 6., 0.001, 1.3, 0.625, 0.3125, 0.00069),
-    AH1N1(2., 6., 0.0002, 1.5, 0.75, 0.375, 0.00075),
-    SARS(5., 14., 0.095, 3., 1.5, 0.75, 0.12),
-    COVID19(6., 16., 0.03, 2.5, 1.25, 0.625, 0.15);
+    FLU(2., 6., 365., 0.001, 1.3, 0.625, 0.3125, 0.00069),
+    AH1N1(2., 6., 365., 0.0002, 1.5, 0.75, 0.375, 0.00075),
+    SARS(5., 14., 365., 0.095, 3., 1.5, 0.75, 0.12),
+    COVID19(6., 16., 180., 0.03, 2.5, 1.25, 0.625, 0.15);
 
     public static int iterator = 0;
     static GuiContext guiContext;
     private static final double reproductionStep = 0.2;
     private final double incubation;
     private final double infection;
+    private final double immunity;
     @Getter(AccessLevel.NONE)
     private final double reproduction;
     private final double reproductionDistancing1;
     private final double reproductionDistancing2;
     private final double hospitalizationPerc;
     @Setter private double mortality;
-    DiseaseConfig(double incubation, double infection, double mortality, double reproduction,
-            double reproductionDistancing1, double reproductionDistancing2, double hospitalizationPerc) {
+    DiseaseConfig(double incubation, double infection, double immunity, double mortality, double reproduction,
+                  double reproductionDistancing1, double reproductionDistancing2, double hospitalizationPerc) {
         this.incubation = incubation;
         this.infection = infection;
+        this.immunity = immunity;
         this.mortality = mortality;
         this.reproduction = reproduction;
         this.reproductionDistancing1 = reproductionDistancing1;
