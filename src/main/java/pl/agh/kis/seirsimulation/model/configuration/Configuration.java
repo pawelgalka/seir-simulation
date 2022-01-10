@@ -12,7 +12,7 @@ public class Configuration {
     public static final StrategyEnum DISEASE_STRATEGY = StrategyEnum.NO_VITAL_SEIRS;
     public static final double MOVING_PPL_PERC = 0.25;
     public static final double MOVING_PPL_SICK = 0.1;
-    //Poland Statistics 2019
+    //Poland Statistics 2021
     public static final double BIRTH_RATE = 10. / 365;
     public static final double DEATH_RATE = 10. / 365;
     public static final int MIN_RANDOM_CELL = 100;
