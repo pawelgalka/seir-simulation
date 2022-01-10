@@ -9,7 +9,7 @@ import pl.agh.kis.seirsimulation.model.strategy.StrategyEnum;
 public class Configuration {
 
     //Model Config
-    public static final StrategyEnum DISEASE_STRATEGY = StrategyEnum.NO_VITAL_SEIRS;
+    public static final StrategyEnum DISEASE_STRATEGY = StrategyEnum.NO_VITAL_SIR;
     public static final double MOVING_PPL_PERC = 0.25;
     public static final double MOVING_PPL_SICK = 0.1;
     //Poland Statistics 2021
